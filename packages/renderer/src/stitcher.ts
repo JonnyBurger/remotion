@@ -1,4 +1,5 @@
-import execa from 'execa';
+import {fetchFile} from '@ffmpeg/ffmpeg';
+import path from 'path';
 import {
 	Codec,
 	ImageFormat,
@@ -7,7 +8,6 @@ import {
 	ProResProfile,
 	RenderAssetInfo,
 } from 'remotion';
-import {assetsToFfmpegInputs} from './assets-to-ffmpeg-inputs';
 import {calculateAssetPositions} from './assets/calculate-asset-positions';
 import {convertAssetsToFileUrls} from './assets/convert-assets-to-file-urls';
 import {markAllAssetsAsDownloaded} from './assets/download-and-map-assets-to-file';
@@ -19,8 +19,13 @@ import {getCodecName} from './get-codec-name';
 import {getFrameInfo} from './get-frame-number-length';
 import {getProResProfileName} from './get-prores-profile-name';
 import {DEFAULT_IMAGE_FORMAT} from './image-format';
-import {parseFfmpegProgress} from './parse-ffmpeg-progress';
 import {resolveAssetSrc} from './resolve-asset-src';
+import {
+	ENABLE_WASM_FFMPEG,
+	load,
+	runFfmpegCommand,
+	wasmFfmpeg,
+} from './run-ffmpeg-command';
 import {validateFfmpeg} from './validate-ffmpeg';
 
 // eslint-disable-next-line complexity
@@ -101,6 +106,20 @@ export const stitchFramesToVideo = async (options: {
 		}),
 	]);
 
+	if (frameInfo?.filelist) {
+		await load;
+		await Promise.all(
+			frameInfo.filelist.map(async (file) => {
+				// eslint-disable-next-line new-cap
+				return wasmFfmpeg.FS(
+					'writeFile',
+					file,
+					await fetchFile(path.resolve(options.dir, file))
+				);
+			})
+		);
+	}
+
 	markAllAssetsAsDownloaded();
 	const assetPositions = calculateAssetPositions(fileUrlAssets);
 
@@ -125,6 +144,9 @@ export const stitchFramesToVideo = async (options: {
 		console.log('filters', filters);
 	}
 
+	const tmpFsOutputLocation = path.basename(options.outputLocation);
+
+	console.log({tmpFsOutputLocation});
 	const {complexFilterFlag, cleanup} = await createFfmpegComplexFilter(filters);
 	const ffmpegArgs = [
 		['-r', String(options.fps)],
@@ -134,34 +156,19 @@ export const stitchFramesToVideo = async (options: {
 		frameInfo
 			? ['-i', `element-%0${frameInfo.numberLength}d.${imageFormat}`]
 			: null,
-		...assetsToFfmpegInputs({
-			assets: assetPaths,
-			isAudioOnly,
-			fps: options.fps,
-			frameCount: options.assetsInfo.assets.length,
-		}),
 		encoderName
 			? // -c:v is the same as -vcodec as -codec:video
 			  // and specified the video codec.
 			  ['-c:v', encoderName]
 			: // If only exporting audio, we drop the video explicitly
 			  ['-vn'],
-		proResProfileName ? ['-profile:v', proResProfileName] : null,
 		supportsCrf ? ['-crf', String(crf)] : null,
 		isAudioOnly ? null : ['-pix_fmt', pixelFormat],
 
 		// Without explicitly disabling auto-alt-ref,
 		// transparent WebM generation doesn't work
 		pixelFormat === 'yuva420p' ? ['-auto-alt-ref', '0'] : null,
-		isAudioOnly ? null : ['-b:v', '1M'],
-		audioCodecName ? ['-c:a', audioCodecName] : null,
-		complexFilterFlag,
-		// Ignore audio from image sequence
-		isAudioOnly ? null : ['-map', '0:v'],
-		// Ignore metadata that may come from remote media
-		isAudioOnly ? null : ['-map_metadata', '-1'],
-		options.force ? '-y' : null,
-		options.outputLocation,
+		ENABLE_WASM_FFMPEG ? tmpFsOutputLocation : options.outputLocation,
 	];
 
 	if (options.verbose) {
@@ -173,8 +180,8 @@ export const stitchFramesToVideo = async (options: {
 		.reduce<(string | null)[]>((acc, val) => acc.concat(val), [])
 		.filter(Boolean) as string[];
 
-	const task = execa('ffmpeg', ffmpegString, {cwd: options.dir});
-
+	const task = runFfmpegCommand(ffmpegString, true, {cwd: options.dir});
+	/*
 	task.stderr?.on('data', (data: Buffer) => {
 		if (options.onProgress) {
 			const parsed = parseFfmpegProgress(data.toString());
@@ -182,7 +189,8 @@ export const stitchFramesToVideo = async (options: {
 				options.onProgress(parsed);
 			}
 		}
-	});
+	}); */
 	await task;
+
 	cleanup();
 };

@@ -1,4 +1,4 @@
-#! /usr/bin/env node
+#! /usr/bin/env node --experimental-wasm-threads
 const {cli} = require('./dist/index');
 
 cli()

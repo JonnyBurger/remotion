@@ -13,6 +13,7 @@ export const getFrameInfo = async ({
 }): Promise<null | {
 	numberLength: number;
 	startNumber: number;
+	filelist: string[];
 }> => {
 	if (isAudioOnly) {
 		return null;
@@ -28,5 +29,5 @@ export const getFrameInfo = async ({
 	const biggestNumber = max(numbers);
 	const smallestNumber = min(numbers);
 	const numberLength = String(biggestNumber).length;
-	return {numberLength, startNumber: smallestNumber};
+	return {numberLength, startNumber: smallestNumber, filelist: files};
 };

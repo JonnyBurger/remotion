@@ -1,4 +1,4 @@
-import execa from 'execa';
+import {runFfmpegCommand} from './run-ffmpeg-command';
 import {binaryExists} from './validate-ffmpeg';
 
 let buildConfig: string | null = null;
@@ -10,7 +10,7 @@ export const getFfmpegBuildInfo = async () => {
 		return buildConfig;
 	}
 
-	const data = await execa('ffmpeg', ['-buildconf']);
+	const data = await runFfmpegCommand(['-buildconf'], false);
 	buildConfig = data.stderr;
 	return buildConfig;
 };

@@ -25,6 +25,7 @@ export const isHomebrewInstalled = async (): Promise<boolean> => {
 };
 
 export const validateFfmpeg = async (): Promise<void> => {
+	// TODO: Test for WASM
 	const ffmpegExists = await binaryExists('ffmpeg');
 	if (!ffmpegExists) {
 		console.error('It looks like FFMPEG is not installed');
