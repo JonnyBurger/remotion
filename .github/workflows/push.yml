@@ -34,7 +34,7 @@ jobs:
       - uses: Iamshankhadeep/setup-ffmpeg@v1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          version: ${{ matrix.versionffmpeg_version }}
+          version: ${{ matrix.ffmpeg_version }}
       - run: npm i
       - run: npx lerna bootstrap --ci --concurrency=2
       - run: npm run build

@@ -169,6 +169,17 @@ export const Index: React.FC = () => {
 				durationInFrames={180 * 30}
 			/>
 			<Composition
+				id="audio-visualization-wave"
+				lazyComponent={() => import('./AudioVisualization')}
+				width={1080}
+				height={1080}
+				fps={30}
+				defaultProps={{
+					isWaveform: true,
+				}}
+				durationInFrames={5 * 30}
+			/>
+			<Composition
 				id="drop-dots"
 				lazyComponent={() => import('./DropDots/DropDots')}
 				width={1080}

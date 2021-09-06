@@ -6,7 +6,7 @@ type Bar = {
 	amplitude: number;
 };
 
-export const getWaveformPortion = ({
+const getWaveformPortion = ({
 	audioData,
 	startTimeInSeconds,
 	durationInSeconds,
@@ -36,3 +36,5 @@ export const getWaveformPortion = ({
 		};
 	});
 };
+
+export {getWaveformPortion, Bar};
