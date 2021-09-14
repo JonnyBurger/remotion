@@ -25,6 +25,7 @@
   --light-text-color: #777;
   --clear-hover: rgba(0, 0, 0, 0.04);
   --box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  --shaded-panel: rgba(0, 0, 0, 0.02);
 }
 [data-theme="dark"] {
   --text-color: #fff;
@@ -34,6 +35,7 @@
   --blue-button-color: white;
   --light-text-color: #aaa;
   --box-shadow: 0 1px 8px rgba(255, 255, 255, 0.2);
+  --shaded-panel: rgba(255, 255, 255, 0.02);
 }
 
 [data-theme="light"] .docusaurus-highlight-code-line {

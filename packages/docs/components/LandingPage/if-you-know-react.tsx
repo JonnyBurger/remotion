@@ -7,8 +7,8 @@ import styles from "./ifyouknowreact.module.css";
 export const IfYouKnowReact: React.FC = () => {
   return (
     <div className={styles.ifyouknowrow}>
-      <CodeExample></CodeExample>
-      <div style={{ width: 40 }}></div>
+      <CodeExample />
+      <div style={{ width: 40 }} />
       <div>
         <h2 className={styles.ifyouknowtitle}>
           If you know <span className={styles.rea}>React</span> <br />
@@ -19,8 +19,8 @@ export const IfYouKnowReact: React.FC = () => {
           of React stay the same. <br />
         </p>
         Learn the fundamentals in just a few minutes.
-        <Spacer></Spacer>
-        <Spacer></Spacer>
+        <Spacer />
+        <Spacer />
         <a className={styles.aknow} href="/docs/the-fundamentals">
           <BlueButton size="sm" fullWidth={false} loading={false}>
             Learn Remotion
