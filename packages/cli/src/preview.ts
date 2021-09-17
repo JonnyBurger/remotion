@@ -18,7 +18,7 @@ export const previewCommand = xns(async () => {
 	const {port: desiredPort} = parsedCli;
 	const fullPath = path.join(process.cwd(), file);
 
-	const appliedName = loadConfig();
+	const appliedName = await loadConfig();
 	if (appliedName) {
 		Log.verbose(`Applied configuration from ${appliedName}.`);
 	} else {

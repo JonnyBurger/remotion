@@ -6,7 +6,7 @@ import {parsedCli} from './parse-command-line';
 export const defaultConfigFileJavascript = 'remotion.config.js';
 export const defaultConfigFileTypescript = 'remotion.config.ts';
 
-export const loadConfig = (): string | null => {
+export const loadConfig = (): Promise<string | null> => {
 	if (parsedCli.config) {
 		const fullPath = path.resolve(process.cwd(), parsedCli.config);
 		if (!existsSync(fullPath)) {
@@ -27,5 +27,5 @@ export const loadConfig = (): string | null => {
 		return loadConfigFile(defaultConfigFileJavascript, true);
 	}
 
-	return null;
+	return Promise.resolve(null);
 };

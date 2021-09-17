@@ -27,6 +27,7 @@
 		"better-opn": "^2.1.1",
 		"chalk": "^4.1.0",
 		"dotenv": "^9.0.0",
+		"esbuild": "^0.12.25",
 		"execa": "^4.0.2",
 		"minimist": "^1.2.5",
 		"remotion": "^2.3.3",
