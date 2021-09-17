@@ -1,12 +1,20 @@
+import {lazy} from 'react';
 import {interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 
 type Props = {
 	title: string;
 	bgColor: string;
 	color: string;
+	loading: boolean;
 };
 
-const CarSlideshow = ({title, bgColor, color}: Props) => {
+const TriggerLoading = lazy(() => {
+	return new Promise(() => () =>
+		import('./trigger-loading').then(() => () => null as never)
+	);
+});
+
+const CarSlideshow = ({title, bgColor, color, loading}: Props) => {
 	const frame = useCurrentFrame();
 	const {width, height, durationInFrames} = useVideoConfig();
 	const left = interpolate(frame, [0, durationInFrames], [width, width * -1]);
@@ -35,6 +43,7 @@ const CarSlideshow = ({title, bgColor, color}: Props) => {
 			>
 				{title}
 			</h1>
+			{loading && <TriggerLoading />}
 		</div>
 	);
 };

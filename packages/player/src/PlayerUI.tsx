@@ -14,6 +14,7 @@ import React, {
 import {Internals} from 'remotion';
 import {calculateScale} from './calculate-scale';
 import {ErrorBoundary} from './error-boundary';
+import {Loading} from './Loading';
 import {PLAYER_CSS_CLASSNAME} from './player-css-classname';
 import {PlayerMethods, PlayerRef} from './player-methods';
 import {Controls} from './PlayerControls';
@@ -381,7 +382,19 @@ const PlayerUI: React.ForwardRefRenderFunction<
 		return content;
 	}
 
-	return <Suspense fallback={<h1>Loading...</h1>}>{content}</Suspense>;
+	const loading = (
+		<Loading
+			size={Number(
+				Math.min(Number(outerStyle.width), Number(outerStyle.height))
+			)}
+		/>
+	);
+
+	return (
+		<Suspense fallback={<div style={outerStyle}>{loading}</div>}>
+			{content}
+		</Suspense>
+	);
 };
 
 export default forwardRef(PlayerUI);

@@ -11,6 +11,7 @@ export default function App() {
 	const [clickToPlay, setClickToPlay] = useState(true);
 	const [logs, setLogs] = useState<string[]>(() => []);
 	const [spaceKeyToPlayOrPause, setspaceKeyToPlayOrPause] = useState(true);
+	const [loading, setLoading] = useState(false);
 
 	const ref = useRef<PlayerRef>(null);
 
@@ -53,6 +54,7 @@ export default function App() {
 					title: String(title),
 					bgColor: String(bgColor),
 					color: String(color),
+					loading: Boolean(loading)
 				}}
 				spaceKeyToPlayOrPause={spaceKeyToPlayOrPause}
 			/>
@@ -162,6 +164,9 @@ export default function App() {
 			</button>
 			<button type="button" onClick={() => setspaceKeyToPlayOrPause((l) => !l)}>
 				spaceKeyToPlayOrPause = {String(spaceKeyToPlayOrPause)}
+			</button>
+			<button type="button" onClick={() => setLoading(!loading)}>
+				Toggle loading
 			</button>
 			<br />
 			<br />
