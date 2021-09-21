@@ -1,5 +1,5 @@
 import './asset-types';
-import {TAsset, TCompMetadata} from './CompositionManager';
+import {TAsset, TCaption, TCompMetadata} from './CompositionManager';
 import {checkMultipleRemotionVersions} from './multiple-versions-warning';
 
 declare global {
@@ -9,6 +9,7 @@ declare global {
 		remotion_setFrame: (frame: number) => void;
 		remotion_initialFrame: number;
 		remotion_collectAssets: () => TAsset[];
+		remotion_collectCaptions: () => TCaption[];
 		remotion_isPlayer: boolean;
 		remotion_imported: boolean;
 	}
@@ -19,8 +20,9 @@ checkMultipleRemotionVersions();
 export * from './AbsoluteFill';
 export {AnyComponent} from './any-component';
 export * from './audio';
+export * from './caption';
 export * from './Composition';
-export {TAsset} from './CompositionManager';
+export {TAsset, TCaption} from './CompositionManager';
 export * from './config';
 export {getInputProps} from './config/input-props';
 export * from './easing';

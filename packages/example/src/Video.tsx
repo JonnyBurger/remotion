@@ -228,7 +228,7 @@ export const Index: React.FC = () => {
 				width={1280}
 				height={720}
 				fps={30}
-				durationInFrames={600}
+				durationInFrames={200}
 			/>
 			<Composition
 				id="three-basic"

@@ -1,4 +1,4 @@
-import {TAsset, TCompMetadata} from 'remotion';
+import {TAsset, TCaption, TCompMetadata} from 'remotion';
 import {
 	ffmpegHasFeature,
 	getFfmpegBuildInfo,
@@ -16,6 +16,7 @@ declare global {
 		getStaticCompositions: () => TCompMetadata[];
 		remotion_setFrame: (frame: number) => void;
 		remotion_collectAssets: () => TAsset[];
+		remotion_collectCaptions: () => TCaption[];
 	}
 }
 

@@ -1,8 +1,9 @@
 import {createWriteStream, mkdirSync} from 'fs';
 import got from 'got';
 import path from 'path';
-import {random, TAsset} from 'remotion';
+import {random} from 'remotion';
 import sanitizeFilename from 'sanitize-filename';
+import {DownloadableAsset} from './types';
 
 const isDownloadingMap: {[key: string]: boolean} = {};
 const hasBeenDownloadedMap: {[key: string]: boolean} = {};
@@ -104,15 +105,17 @@ export const getSanitizedFilenameForAssetUrl = ({
 	);
 };
 
-export const downloadAndMapAssetsToFileUrl = async ({
+export const downloadAndMapAssetsToFileUrl = async <
+	T extends DownloadableAsset
+>({
 	localhostAsset,
 	webpackBundle,
 	onDownload,
 }: {
-	localhostAsset: TAsset;
+	localhostAsset: T;
 	webpackBundle: string;
 	onDownload: (src: string) => void;
-}): Promise<TAsset> => {
+}): Promise<T> => {
 	const newSrc = getSanitizedFilenameForAssetUrl({
 		src: localhostAsset.src,
 		isRemote: localhostAsset.isRemote,

@@ -255,6 +255,9 @@ export const PlayerFn = <T,>(
 			registerAsset: () => undefined,
 			unregisterAsset: () => undefined,
 			assets: [],
+			registerCaption: () => undefined,
+			unregisterCaption: () => undefined,
+			captions: [],
 		};
 	}, [
 		component,

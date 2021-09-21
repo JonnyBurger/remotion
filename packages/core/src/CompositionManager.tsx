@@ -62,8 +62,17 @@ export type TAsset = {
 	playbackRate: number;
 };
 
+export type TCaption = {
+	id: string;
+	isRemote: boolean;
+	language?: string;
+	src: string;
+	title?: string;
+};
+
 export type RenderAssetInfo = {
 	assets: TAsset[][];
+	captions: TCaption[][];
 	bundleDir: string;
 };
 
@@ -77,8 +86,11 @@ export type CompositionManagerContext = {
 	unregisterSequence: (id: string) => void;
 	registerAsset: (asset: TAsset) => void;
 	unregisterAsset: (id: string) => void;
+	registerCaption: (caption: TCaption) => void;
+	unregisterCaption: (id: string) => void;
 	sequences: TSequence[];
 	assets: TAsset[];
+	captions: TCaption[];
 };
 
 export const CompositionManager = createContext<CompositionManagerContext>({
@@ -91,6 +103,9 @@ export const CompositionManager = createContext<CompositionManagerContext>({
 	unregisterSequence: () => undefined,
 	registerAsset: () => undefined,
 	unregisterAsset: () => undefined,
+	registerCaption: () => undefined,
+	unregisterCaption: () => undefined,
 	sequences: [],
 	assets: [],
+	captions: [],
 });

@@ -10,6 +10,7 @@ import {
 	CompositionManager,
 	CompositionManagerContext,
 	TAsset,
+	TCaption,
 	TComposition,
 	TSequence,
 } from './CompositionManager';
@@ -33,6 +34,7 @@ export const RemotionRoot: React.FC = ({children}) => {
 	const [remotionRootId] = useState(() => String(random(null)));
 	const [sequences, setSequences] = useState<TSequence[]>([]);
 	const [assets, setAssets] = useState<TAsset[]>([]);
+	const [captions, setCaptions] = useState<TCaption[]>([]);
 	const [frame, setFrame] = useState<number>(window.remotion_initialFrame ?? 0);
 	const [playing, setPlaying] = useState<boolean>(false);
 	const [fastRefreshes, setFastRefreshes] = useState(0);
@@ -57,6 +59,15 @@ export const RemotionRoot: React.FC = ({children}) => {
 			};
 		}
 	}, [assets]);
+
+	useLayoutEffect(() => {
+		if (typeof window !== 'undefined') {
+			window.remotion_collectCaptions = () => {
+				setCaptions([]); // clear captions at next render
+				return captions;
+			};
+		}
+	}, [captions]);
 
 	const registerComposition = useCallback(<T,>(comp: TComposition<T>) => {
 		setCompositions((comps) => {
@@ -97,6 +108,13 @@ export const RemotionRoot: React.FC = ({children}) => {
 		});
 	}, []);
 
+	const registerCaption = useCallback((caption: TCaption) => {
+		setCaptions((capts) => capts.concat(caption));
+	}, []);
+	const unregisterCaption = useCallback((id: string) => {
+		setCaptions((capts) => capts.filter((a) => a.id !== id));
+	}, []);
+
 	const contextValue = useMemo((): CompositionManagerContext => {
 		return {
 			compositions,
@@ -108,8 +126,11 @@ export const RemotionRoot: React.FC = ({children}) => {
 			unregisterSequence,
 			registerAsset,
 			unregisterAsset,
+			registerCaption,
+			unregisterCaption,
 			sequences,
 			assets,
+			captions,
 		};
 	}, [
 		compositions,
@@ -120,8 +141,11 @@ export const RemotionRoot: React.FC = ({children}) => {
 		unregisterSequence,
 		registerAsset,
 		unregisterAsset,
+		registerCaption,
+		unregisterCaption,
 		sequences,
 		assets,
+		captions,
 	]);
 
 	const timelineContextValue = useMemo((): TimelineContextValue => {

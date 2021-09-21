@@ -29,3 +29,8 @@ export type AssetAudioDetails = {
 };
 
 export type Assets = MediaAsset[];
+
+export interface DownloadableAsset {
+	isRemote: boolean;
+	src: string;
+}
