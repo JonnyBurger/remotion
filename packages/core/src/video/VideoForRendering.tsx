@@ -6,6 +6,7 @@ import React, {
 	useMemo,
 	useRef,
 } from 'react';
+import { useState } from 'react';
 import {getAbsoluteSrc} from '../absolute-src';
 import {
 	useFrameForVolumeProp,
@@ -32,9 +33,13 @@ const VideoForRenderingForwardFunction: React.ForwardRefRenderFunction<
 	const frame = useCurrentFrame();
 	const volumePropsFrame = useFrameForVolumeProp();
 	const videoConfig = useUnsafeVideoConfig();
-	const videoRef = useRef<HTMLVideoElement>(null);
+	const [videoElement, setVideoElement] = useState<HTMLVideoElement>();
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const videoRef = useRef<HTMLVideoElement | null>(null)
 	const sequenceContext = useContext(SequenceContext);
 	const mediaStartsAt = useMediaStartsAt();
+
+	const canvasPropsFromVideoProps = props as React.CanvasHTMLAttributes<HTMLCanvasElement>
 
 	const {registerAsset, unregisterAsset} = useContext(CompositionManager);
 
@@ -98,11 +103,11 @@ const VideoForRenderingForwardFunction: React.ForwardRefRenderFunction<
 	]);
 
 	useImperativeHandle(ref, () => {
-		return videoRef.current as HTMLVideoElement;
+		return videoElement as HTMLVideoElement;
 	});
 
 	useEffect(() => {
-		if (!videoRef.current) {
+		if (!videoElement) {
 			return;
 		}
 
@@ -121,43 +126,36 @@ const VideoForRenderingForwardFunction: React.ForwardRefRenderFunction<
 			return;
 		}
 
-		if (isApproximatelyTheSame(videoRef.current.currentTime, currentTime)) {
-			if (videoRef.current.readyState >= 2) {
+		if (isApproximatelyTheSame(videoElement.currentTime, currentTime)) {
+			if (videoElement.readyState >= 2) {
 				continueRender(handle);
 				return;
 			}
-
-			videoRef.current.addEventListener(
-				'loadeddata',
-				() => {
-					continueRender(handle);
-				},
-				{once: true}
-			);
+			
+			continueRender(handle);
 			return;
 		}
 
-		videoRef.current.currentTime = currentTime;
+		videoElement.currentTime = currentTime;
 
-		videoRef.current.addEventListener(
+		videoElement.addEventListener(
 			'seeked',
 			() => {
 				// Improve me: This is ensures frame perfectness but slows down render.
 				// Please see this issue for context: https://github.com/remotion-dev/remotion/issues/200
-				setTimeout(() => {
-					continueRender(handle);
-				}, 100);
+				drawVideoFrameOnCanvas()
+				continueRender(handle);
 			},
 			{once: true}
 		);
-		videoRef.current.addEventListener(
+		videoElement.addEventListener(
 			'ended',
 			() => {
 				continueRender(handle);
 			},
 			{once: true}
 		);
-		videoRef.current.addEventListener(
+		videoElement.addEventListener(
 			'error',
 			(err) => {
 				console.error('Error occurred in video', err);
@@ -165,16 +163,50 @@ const VideoForRenderingForwardFunction: React.ForwardRefRenderFunction<
 			},
 			{once: true}
 		);
-	}, [
-		volumePropsFrame,
-		props.src,
-		playbackRate,
-		videoConfig.fps,
-		frame,
-		mediaStartsAt,
-	]);
+	}, [volumePropsFrame, props.src, playbackRate, videoConfig.fps, frame, mediaStartsAt, videoElement]);
 
-	return <video ref={videoRef} {...props} onError={onError} />;
+	useEffect(() => {
+		if(!props.src) return
+		const _videoElement = document.createElement(`video`)
+		_videoElement.src = props.src
+		_videoElement.crossOrigin = `anonymous`
+		_videoElement.onerror = (event: Event | string) => {
+			if(onError) onError(event as never)
+		}
+
+		// copying video element props
+		Object.keys(props).forEach(propName => {
+			const propValue = (props as any)[propName]
+			const vid = _videoElement as any
+			vid[propName] = propValue
+		})
+
+		const handle = delayRender();
+		_videoElement.addEventListener(
+			'loadeddata',
+			() => {
+				if(!canvasRef.current || (props.width !== undefined && props.height === undefined)) return continueRender(handle);
+				const canvas = canvasRef.current
+				canvas.width = _videoElement.videoWidth
+				canvas.height = _videoElement.videoHeight
+				videoRef.current = _videoElement || null
+				setVideoElement(_videoElement)
+				continueRender(handle);
+			},
+			{once: true}
+		);
+	}, [props.src]);
+
+	const drawVideoFrameOnCanvas = () => {
+		if(!videoRef.current) return
+		if(!canvasRef.current) return
+		const canvas = canvasRef.current
+		const ctx = canvas.getContext("2d")
+		if(!ctx) return
+		ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+	}
+
+	return <canvas ref={canvasRef} width={props.width} height={props.height} {...canvasPropsFromVideoProps} />;
 };
 
 export const VideoForRendering = forwardRef(VideoForRenderingForwardFunction);
