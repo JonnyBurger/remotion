@@ -5,3 +5,5 @@ lerna-debug.log
 .DS_Store
 coverage
 packages/example/.env
+/packages/example/video.mp4
+/.idea/

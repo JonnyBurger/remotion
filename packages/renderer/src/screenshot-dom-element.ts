@@ -16,11 +16,11 @@ export const screenshotDOMElement = async ({
 		selector?: string;
 	};
 }): Promise<Buffer> => {
-	const path = 'path' in opts ? opts.path : null;
+	const path = 'path' in opts ? opts.path : undefined;
 	const {selector} = opts;
 
 	if (!selector) throw Error('Please provide a selector.');
-	if (!path) throw Error('Please provide a path.');
+	// if (!path) throw Error('Please provide a path.');
 
 	if (imageFormat === 'png') {
 		await page.evaluate(() => {

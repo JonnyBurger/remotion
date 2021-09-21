@@ -1,0 +1,13 @@
+
+#hello {
+    color: #def;
+    /* This text shadow will make the browser lag, but when we render into a video file, it will be 60fps smooth!!! */
+    text-shadow: 0 16px 64px black;
+    font: bold 120px Arimo, sans-serif;
+}
+#scene{
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

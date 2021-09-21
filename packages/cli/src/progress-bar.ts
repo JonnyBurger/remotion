@@ -45,12 +45,14 @@ export const makeBundlingProgress = ({
 export const makeRenderingProgress = ({
 	frames,
 	totalFrames,
+	encodedFrames,
 	steps,
 	concurrency,
 	doneIn,
 }: {
 	frames: number;
 	totalFrames: number;
+	encodedFrames?: number;
 	steps: number;
 	concurrency: number;
 	doneIn: number | null;
@@ -60,8 +62,16 @@ export const makeRenderingProgress = ({
 		'🖼 ',
 		`(2/${steps})`,
 		makeProgressBar(progress),
-		`${doneIn ? 'Rendered' : 'Rendering'} frames (${concurrency}x)`,
-		doneIn === null ? `${frames}/${totalFrames}` : chalk.gray(`${doneIn}ms`),
+		`${doneIn ? 'Rendered' : 'Rendering'}${
+			encodedFrames === undefined
+				? ''
+				: ` and ${doneIn ? 'Encoded' : 'Encoding'}`
+		} frames (${concurrency}x)`,
+		doneIn === null
+			? `${
+					encodedFrames === undefined ? '' : `${encodedFrames}/`
+			  }${frames}/${totalFrames}`
+			: chalk.gray(`${doneIn}ms`),
 	].join(' ');
 };
 
@@ -70,18 +80,22 @@ export const makeStitchingProgress = ({
 	totalFrames,
 	steps,
 	doneIn,
+	parallelEncoding,
 }: {
 	frames: number;
 	totalFrames: number;
 	steps: number;
 	doneIn: number | null;
+	parallelEncoding?: boolean;
 }) => {
 	const progress = frames / totalFrames;
 	return [
 		'🎞 ',
 		`(3/${steps})`,
 		makeProgressBar(progress),
-		`${doneIn ? 'Encoded' : 'Encoding'} video`,
+		parallelEncoding
+			? `${doneIn ? 'Muxed' : 'Muxing'} audio`
+			: `${doneIn ? 'Encoded' : 'Encoding'} video`,
 		doneIn === null ? `${frames}/${totalFrames}` : chalk.gray(`${doneIn}ms`),
 	].join(' ');
 };

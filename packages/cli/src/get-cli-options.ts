@@ -191,8 +191,16 @@ export const getCliOptions = async (type: 'still' | 'series') => {
 	const proResProfile = getAndValidateProResProfile(codec);
 	const browserExecutable = Internals.getBrowserExecutable();
 
+	const isAudioOnly = Internals.isAudioCodec(codec);
+	const parallelEncoding =
+		Internals.getParallelEncoding() &&
+		!shouldOutputImageSequence &&
+		!isAudioOnly;
+
 	return {
 		parallelism: Internals.getConcurrency(),
+		concurrentMode: Internals.getConcurrentMode(),
+		parallelEncoding,
 		frameRange,
 		shouldOutputImageSequence,
 		codec,

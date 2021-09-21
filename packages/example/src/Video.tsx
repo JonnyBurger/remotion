@@ -11,11 +11,20 @@ import {TenFrameTester} from './TenFrameTester';
 import ThreeBasic from './ThreeBasic';
 import {VideoSpeed} from './VideoSpeed';
 import {VideoTesting} from './VideoTesting';
+import {HelloWorld} from "./HelloWorld/HelloWorld";
 
 export const Index: React.FC = () => {
 	const inputProps = getInputProps();
 	return (
 		<>
+			<Composition
+				id="HelloWorld"
+				component={HelloWorld}
+				width={1920}
+				height={1080}
+				fps={60}
+				durationInFrames={60*30}
+			/>
 			<Composition
 				id="dynamic-duration"
 				component={VideoTesting}

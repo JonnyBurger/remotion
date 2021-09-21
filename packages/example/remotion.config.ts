@@ -2,8 +2,10 @@ import os from 'os';
 import path from 'path';
 import {Config, WebpackOverrideFn} from 'remotion';
 
-Config.Rendering.setConcurrency(os.cpus().length);
 Config.Output.setOverwriteOutput(true);
+Config.Rendering.setConcurrentMode('browser');
+Config.Rendering.setParallelEncoding(true);
+//Config.Log.setLevel('verbose');
 
 type Bundler = 'webpack' | 'esbuild';
 

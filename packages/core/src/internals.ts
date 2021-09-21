@@ -21,6 +21,7 @@ import {
 	getOutputCodecOrUndefined,
 } from './config/codec';
 import {getConcurrency} from './config/concurrency';
+import {getConcurrentMode} from './config/concurrent-mode';
 import {
 	getActualCrf,
 	getDefaultCrfForCodec,
@@ -45,6 +46,7 @@ import {
 	WebpackOverrideFn,
 } from './config/override-webpack';
 import {getShouldOverwrite} from './config/overwrite';
+import {getParallelEncoding} from './config/parallel-encoding';
 import {
 	DEFAULT_PIXEL_FORMAT,
 	getPixelFormat,
@@ -128,6 +130,8 @@ export const Internals = {
 	getIsEvaluation,
 	getPixelFormat,
 	getConcurrency,
+	getConcurrentMode,
+	getParallelEncoding,
 	getRange,
 	getShouldOverwrite,
 	getOutputCodecOrUndefined,

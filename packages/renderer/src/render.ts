@@ -3,6 +3,7 @@ import {Browser as PuppeteerBrowser} from 'puppeteer-core';
 import {
 	Browser,
 	BrowserExecutable,
+	ConcurrentMode,
 	FrameRange,
 	ImageFormat,
 	Internals,
@@ -39,6 +40,9 @@ export const renderFrames = async ({
 	puppeteerInstance,
 	onError,
 	browserExecutable,
+	concurrentMode,
+	parallelEncoding,
+	writeFrame,
 }: {
 	config: VideoConfig;
 	compositionId: string;
@@ -54,9 +58,12 @@ export const renderFrames = async ({
 	browser?: Browser;
 	frameRange?: FrameRange | null;
 	dumpBrowserLogs?: boolean;
-	puppeteerInstance?: PuppeteerBrowser;
+	puppeteerInstance?: Array<PuppeteerBrowser>;
 	browserExecutable?: BrowserExecutable;
 	onError?: (info: OnErrorInfo) => void;
+	concurrentMode?: ConcurrentMode;
+	parallelEncoding?: boolean;
+	writeFrame?: (buffer?: Buffer) => void;
 }): Promise<RenderFramesOutput> => {
 	Internals.validateDimension(
 		config.height,
@@ -89,13 +96,26 @@ export const renderFrames = async ({
 	const [{port, close}, browserInstance] = await Promise.all([
 		serveStatic(webpackBundle),
 		puppeteerInstance ??
-			openBrowser(browser, {
-				shouldDumpIo: dumpBrowserLogs,
-				browserExecutable,
-			}),
+			Promise.all(
+				new Array(concurrentMode === 'browser' ? actualParallelism : 1)
+					.fill(true)
+					.map(() =>
+						openBrowser(browser, {
+							shouldDumpIo: dumpBrowserLogs,
+							browserExecutable,
+						})
+					)
+			),
+		// puppeteerInstance ??
+		// openBrowser(browser, {
+		// 	shouldDumpIo: dumpBrowserLogs,
+		// 	browserExecutable,
+		// }),
 	]);
-	const pages = new Array(actualParallelism).fill(true).map(async () => {
-		const page = await browserInstance.newPage();
+
+	const initPage = async (_browser: PuppeteerBrowser) => {
+		const page = await _browser.newPage();
+		// const page = await browserInstance.newPage();
 		page.setViewport({
 			width: config.width,
 			height: config.height,
@@ -126,8 +146,18 @@ export const renderFrames = async ({
 		await page.goto(site);
 		page.off('pageerror', errorCallback);
 		return page;
-	});
-	const {stopCycling} = cycleBrowserTabs(browserInstance);
+	};
+
+	const pages =
+		concurrentMode === 'browser'
+			? browserInstance.map(initPage)
+			: new Array(actualParallelism)
+					.fill(true)
+					.map(() => initPage(browserInstance[0]));
+
+	let stopCycling;
+	if (concurrentMode !== 'browser')
+		stopCycling = cycleBrowserTabs(browserInstance[0]).stopCycling;
 
 	const puppeteerPages = await Promise.all(pages);
 	const pool = new Pool(puppeteerPages);
@@ -145,69 +175,79 @@ export const renderFrames = async ({
 	onStart({
 		frameCount,
 	});
-	const assets = await Promise.all(
-		new Array(frameCount)
-			.fill(Boolean)
-			.map((x, i) => i)
-			.map(async (index) => {
-				const frame = getFrameToRender(frameRange ?? null, index);
-				const freePage = await pool.acquire();
-				const paddedIndex = String(frame).padStart(filePadLength, '0');
+	const frameRenderTasks = new Array(frameCount)
+		.fill(Boolean)
+		.map((x, i) => i)
+		.map(async (index) => {
+			const frame = getFrameToRender(frameRange ?? null, index);
+			const freePage = await pool.acquire();
+			const paddedIndex = String(frame).padStart(filePadLength, '0');
 
-				const errorCallback = (err: Error) => {
-					onError?.({error: err, frame});
-				};
+			const errorCallback = (err: Error) => {
+				onError?.({error: err, frame});
+			};
 
-				freePage.on('pageerror', errorCallback);
-				try {
-					await seekToFrame({frame, page: freePage});
-				} catch (err) {
-					const error = err as Error;
-					if (
-						error.message.includes('timeout') &&
-						error.message.includes('exceeded')
-					) {
-						errorCallback(
-							new Error(
-								'The rendering timed out. See https://www.remotion.dev/docs/timeout/ for possible reasons.'
-							)
-						);
-					} else {
-						errorCallback(error);
-					}
-
-					throw error;
+			freePage.on('pageerror', errorCallback);
+			try {
+				await seekToFrame({frame, page: freePage});
+			} catch (err) {
+				const error = err as Error;
+				if (
+					error.message.includes('timeout') &&
+					error.message.includes('exceeded')
+				) {
+					errorCallback(
+						new Error(
+							'The rendering timed out. See https://www.remotion.dev/docs/timeout/ for possible reasons.'
+						)
+					);
+				} else {
+					errorCallback(error);
 				}
 
-				if (imageFormat !== 'none') {
-					await provideScreenshot({
-						page: freePage,
-						imageFormat,
-						quality,
-						options: {
-							frame,
-							output: path.join(
-								outputDir,
-								`element-${paddedIndex}.${imageFormat}`
-							),
-						},
-					});
-				}
+				throw error;
+			}
 
-				const collectedAssets = await freePage.evaluate(() => {
-					return window.remotion_collectAssets();
+			let frameBuffer;
+
+			if (imageFormat !== 'none') {
+				frameBuffer = await provideScreenshot({
+					page: freePage,
+					imageFormat,
+					quality,
+					options: {
+						frame,
+						output: parallelEncoding
+							? undefined
+							: path.join(outputDir, `element-${paddedIndex}.${imageFormat}`),
+					},
 				});
-				pool.release(freePage);
-				framesRendered++;
-				onFrameUpdate(framesRendered);
-				freePage.off('pageerror', errorCallback);
-				return collectedAssets;
-			})
+			}
+
+			const collectedAssets = await freePage.evaluate(() => {
+				return window.remotion_collectAssets();
+			});
+			pool.release(freePage);
+			framesRendered++;
+			onFrameUpdate(framesRendered);
+			freePage.off('pageerror', errorCallback);
+			return {collectedAssets, frameBuffer};
+		});
+
+	if (parallelEncoding) {
+		for (const i in frameRenderTasks) {
+			const o = await frameRenderTasks[i];
+			writeFrame?.(o.frameBuffer);
+		}
+	}
+
+	const assets = (await Promise.all(frameRenderTasks)).map(
+		(o) => o.collectedAssets
 	);
 	close().catch((err) => {
 		console.log('Unable to close web server', err);
 	});
-	stopCycling();
+	stopCycling?.();
 	// If browser instance was passed in, we close all the pages
 	// we opened.
 	// If new browser was opened, then closing the browser as a cleanup.
@@ -217,9 +257,11 @@ export const renderFrames = async ({
 			console.log('Unable to close browser tab', err);
 		});
 	} else {
-		browserInstance.close().catch((err) => {
-			console.log('Unable to close browser', err);
-		});
+		browserInstance.forEach((o) =>
+			o.close().catch((err) => {
+				console.log('Unable to close browser', err);
+			})
+		);
 	}
 
 	return {
