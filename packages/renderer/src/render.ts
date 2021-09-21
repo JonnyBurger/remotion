@@ -19,9 +19,28 @@ import {provideScreenshot} from './provide-screenshot';
 import {seekToFrame} from './seek-to-frame';
 import {serveStatic} from './serve-static';
 import {setPropsAndEnv} from './set-props-and-env';
-import {OnErrorInfo, OnStartData, RenderFramesOutput} from './types';
+import {OnStartData, RenderFramesOutput} from './types';
 
-export const renderFrames = async ({
+type RenderFramesOptions = {
+	config: VideoConfig;
+	compositionId: string;
+	onStart: (data: OnStartData) => void;
+	onFrameUpdate: (f: number) => void;
+	outputDir: string;
+	inputProps: unknown;
+	envVariables?: Record<string, string>;
+	webpackBundle: string;
+	imageFormat: ImageFormat;
+	parallelism?: number | null;
+	quality?: number;
+	browser?: Browser;
+	frameRange?: FrameRange | null;
+	dumpBrowserLogs?: boolean;
+	puppeteerInstance?: PuppeteerBrowser;
+	browserExecutable?: BrowserExecutable;
+};
+
+const innerRenderFrames = async ({
 	config,
 	parallelism,
 	onFrameUpdate,
@@ -39,24 +58,8 @@ export const renderFrames = async ({
 	puppeteerInstance,
 	onError,
 	browserExecutable,
-}: {
-	config: VideoConfig;
-	compositionId: string;
-	onStart: (data: OnStartData) => void;
-	onFrameUpdate: (f: number) => void;
-	outputDir: string;
-	inputProps: unknown;
-	envVariables?: Record<string, string>;
-	webpackBundle: string;
-	imageFormat: ImageFormat;
-	parallelism?: number | null;
-	quality?: number;
-	browser?: Browser;
-	frameRange?: FrameRange | null;
-	dumpBrowserLogs?: boolean;
-	puppeteerInstance?: PuppeteerBrowser;
-	browserExecutable?: BrowserExecutable;
-	onError?: (info: OnErrorInfo) => void;
+}: RenderFramesOptions & {
+	onError: (err: Error) => void;
 }): Promise<RenderFramesOutput> => {
 	Internals.validateDimension(
 		config.height,
@@ -94,42 +97,70 @@ export const renderFrames = async ({
 				browserExecutable,
 			}),
 	]);
+	const errorCallback = (err: Error) => {
+		onError(err);
+	};
+
 	const pages = new Array(actualParallelism).fill(true).map(async () => {
 		const page = await browserInstance.newPage();
-		page.setViewport({
-			width: config.width,
-			height: config.height,
-			deviceScaleFactor: 1,
-		});
-		const errorCallback = (err: Error) => {
-			onError?.({error: err, frame: null});
-		};
 
 		page.on('pageerror', errorCallback);
-
-		const initialFrame =
-			typeof frameRange === 'number'
-				? frameRange
-				: frameRange === null || frameRange === undefined
-				? 0
-				: frameRange[0];
-
-		await setPropsAndEnv({
-			inputProps,
-			envVariables,
-			page,
-			port,
-			initialFrame,
-		});
-
-		const site = `http://localhost:${port}/index.html?composition=${compositionId}`;
-		await page.goto(site);
-		page.off('pageerror', errorCallback);
 		return page;
 	});
-	const {stopCycling} = cycleBrowserTabs(browserInstance);
 
 	const puppeteerPages = await Promise.all(pages);
+	const {stopCycling} = cycleBrowserTabs(browserInstance);
+
+	const cleanup = async () => {
+		close().catch((err) => {
+			console.log('Unable to close web server', err);
+		});
+		stopCycling();
+		// If browser instance was passed in, we close all the pages
+		// we opened.
+		// If new browser was opened, then closing the browser as a cleanup.
+
+		if (puppeteerInstance) {
+			await Promise.all(puppeteerPages.map((p) => p.close())).catch((err) => {
+				console.log('Unable to close browser tab', err);
+			});
+		} else {
+			browserInstance.close().catch((err) => {
+				console.log('Unable to close browser', err);
+			});
+		}
+	};
+
+	await Promise.all(
+		puppeteerPages.map(async (page) => {
+			page.setViewport({
+				width: config.width,
+				height: config.height,
+				deviceScaleFactor: 1,
+			});
+
+			const initialFrame =
+				typeof frameRange === 'number'
+					? frameRange
+					: frameRange === null || frameRange === undefined
+					? 0
+					: frameRange[0];
+
+			await setPropsAndEnv({
+				inputProps,
+				envVariables,
+				page,
+				port,
+				initialFrame,
+			});
+
+			const site = `http://localhost:${port}/index.html?composition=${compositionId}`;
+			await page.goto(site);
+			page.off('pageerror', errorCallback);
+			return page;
+		})
+	);
+
 	const pool = new Pool(puppeteerPages);
 
 	const frameCount = getFrameCount(config.durationInFrames, frameRange ?? null);
@@ -145,82 +176,63 @@ export const renderFrames = async ({
 	onStart({
 		frameCount,
 	});
+
 	const assets = await Promise.all(
-		new Array(frameCount)
-			.fill(Boolean)
-			.map((x, i) => i)
-			.map(async (index) => {
-				const frame = getFrameToRender(frameRange ?? null, index);
-				const freePage = await pool.acquire();
-				const paddedIndex = String(frame).padStart(filePadLength, '0');
+		new Array(frameCount).fill(Boolean).map(async (_, index) => {
+			const frame = getFrameToRender(frameRange ?? null, index);
+			const freePage = await pool.acquire();
+			const paddedIndex = String(frame).padStart(filePadLength, '0');
 
-				const errorCallback = (err: Error) => {
-					onError?.({error: err, frame});
-				};
+			const errorCallbackOnFrame = (err: Error) => {
+				onError(new Error(`Error on rendering frame ${frame}: ${err.stack}`));
+			};
 
-				freePage.on('pageerror', errorCallback);
-				try {
-					await seekToFrame({frame, page: freePage});
-				} catch (err) {
-					const error = err as Error;
-					if (
-						error.message.includes('timeout') &&
-						error.message.includes('exceeded')
-					) {
-						errorCallback(
-							new Error(
-								'The rendering timed out. See https://www.remotion.dev/docs/timeout/ for possible reasons.'
-							)
-						);
-					} else {
-						errorCallback(error);
-					}
-
-					throw error;
+			freePage.on('pageerror', errorCallbackOnFrame);
+			try {
+				await seekToFrame({frame, page: freePage});
+			} catch (err) {
+				const error = err as Error;
+				if (
+					error.message.includes('timeout') &&
+					error.message.includes('exceeded')
+				) {
+					errorCallbackOnFrame(
+						new Error(
+							`The rendering timed out on frame ${frame}. See https://www.remotion.dev/docs/timeout/ for possible reasons.`
+						)
+					);
 				}
 
-				if (imageFormat !== 'none') {
-					await provideScreenshot({
-						page: freePage,
-						imageFormat,
-						quality,
-						options: {
-							frame,
-							output: path.join(
-								outputDir,
-								`element-${paddedIndex}.${imageFormat}`
-							),
-						},
-					});
-				}
+				throw new Error(`Error on rendering frame ${frame}: ${error.stack}`);
+			}
 
-				const collectedAssets = await freePage.evaluate(() => {
-					return window.remotion_collectAssets();
+			if (imageFormat !== 'none') {
+				await provideScreenshot({
+					page: freePage,
+					imageFormat,
+					quality,
+					options: {
+						frame,
+						output: path.join(
+							outputDir,
+							`element-${paddedIndex}.${imageFormat}`
+						),
+					},
 				});
-				pool.release(freePage);
-				framesRendered++;
-				onFrameUpdate(framesRendered);
-				freePage.off('pageerror', errorCallback);
-				return collectedAssets;
-			})
-	);
-	close().catch((err) => {
-		console.log('Unable to close web server', err);
-	});
-	stopCycling();
-	// If browser instance was passed in, we close all the pages
-	// we opened.
-	// If new browser was opened, then closing the browser as a cleanup.
+			}
 
-	if (puppeteerInstance) {
-		await Promise.all(puppeteerPages.map((p) => p.close())).catch((err) => {
-			console.log('Unable to close browser tab', err);
-		});
-	} else {
-		browserInstance.close().catch((err) => {
-			console.log('Unable to close browser', err);
-		});
-	}
+			const collectedAssets = await freePage.evaluate(() => {
+				return window.remotion_collectAssets();
+			});
+			pool.release(freePage);
+			framesRendered++;
+			onFrameUpdate(framesRendered);
+			freePage.off('pageerror', errorCallbackOnFrame);
+			return collectedAssets;
+		})
+	);
+
+	await cleanup();
 
 	return {
 		assetsInfo: {
@@ -229,4 +241,14 @@ export const renderFrames = async ({
 		},
 		frameCount,
 	};
+};
+
+export const renderFrames = (
+	options: RenderFramesOptions
+): Promise<RenderFramesOutput> => {
+	return new Promise<RenderFramesOutput>((resolve, reject) => {
+		innerRenderFrames({...options, onError: (err) => reject(err)})
+			.then((res) => resolve(res))
+			.catch((err) => reject(err));
+	});
 };

@@ -103,28 +103,29 @@ export const still = async () => {
 	const renderProgress = createProgressBar();
 	const renderStart = Date.now();
 
-	await renderStill({
-		composition,
-		frame: stillFrame,
-		output: userOutput,
-		webpackBundle: bundled,
-		quality,
-		browser,
-		dumpBrowserLogs: Internals.Logging.isEqualOrBelowLogLevel('verbose'),
-		envVariables,
-		imageFormat,
-		inputProps,
-		onError: (err: Error) => {
-			Log.error();
-			Log.error('The following error occured when rendering the still:');
+	try {
+		await renderStill({
+			composition,
+			frame: stillFrame,
+			output: userOutput,
+			webpackBundle: bundled,
+			quality,
+			browser,
+			dumpBrowserLogs: Internals.Logging.isEqualOrBelowLogLevel('verbose'),
+			envVariables,
+			imageFormat,
+			inputProps,
+			puppeteerInstance: openedBrowser,
+			overwrite: Internals.getShouldOverwrite(),
+		});
+	} catch (err) {
+		Log.error();
+		Log.error('The following error occured when rendering the still:');
 
-			handleCommonError(err);
+		handleCommonError(err as Error);
 
-			process.exit(1);
-		},
-		puppeteerInstance: openedBrowser,
-		overwrite: Internals.getShouldOverwrite(),
-	});
+		process.exit(1);
+	}
 
 	const closeBrowserPromise = openedBrowser.close();
 	renderProgress.update(

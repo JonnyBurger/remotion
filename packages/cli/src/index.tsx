@@ -1,4 +1,5 @@
 import {checkNodeVersion} from './check-version';
+import {handleCommonError} from './handle-common-errors';
 import {Log} from './log';
 import {parsedCli} from './parse-command-line';
 import {previewCommand} from './preview';
@@ -36,7 +37,7 @@ export const cli = async () => {
 			process.exit(1);
 		}
 	} catch (err) {
-		Log.error((err as Error).stack);
+		handleCommonError(err as Error);
 		process.exit(1);
 	}
 };

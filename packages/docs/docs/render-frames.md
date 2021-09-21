@@ -27,7 +27,6 @@ const renderFrames: (options: {
   frameRange?: number | [number, number] | null;
   dumpBrowserLogs?: boolean;
   puppeteerInstance?: puppeteer.Browser;
-  onError?: (info: {error: Error; frame: number | null}) => void;
 }): Promise<RenderFramesOutput>;
 ```
 
@@ -124,29 +123,6 @@ An already open Puppeteer [`Browser`](https://pptr.dev/#?product=Puppeteer&versi
 _optional - Available since v2.2.0_
 
 An object containing key-value pairs of environment variables which will be injected into your Remotion projected and which can be accessed by reading the global `process.env` object.
-
-### `onError?`
-
-_optional - Available since v2.1.0_
-
-Allows you to react to an exception thrown in your React code. The callback has an argument which is an object containing `error` and `frame` properties.
-The `frame` property tells you at which frame the error was thrown. If the error was thrown at startup, `frame` is null.
-
-```tsx twoslash
-import {renderFrames as rf} from '@remotion/renderer'
-const renderFrames = (options: Partial<Parameters<typeof rf>[0]>) => {}
-// ---cut---
-renderFrames({
-  onError: (info) => {
-    if (info.frame === null) {
-      console.log('Got error while initalizing video rendering', info.error)
-    } else {
-      console.log('Got error at frame ', info.frame, info.error)
-    }
-    // Handle error here
-  }
-})
-```
 
 ### `browserExecutable?`
 

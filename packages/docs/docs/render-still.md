@@ -108,24 +108,6 @@ _optional - default `false`_
 
 A boolean value deciding whether Puppeteer logs should be printed to the console, useful for debugging only.
 
-### `onError?`
-
-_optional_
-
-Allows you to react to an exception thrown in your React code. The callback has an argument which is the error.
-
-```tsx twoslash
-import {renderStill as rs} from '@remotion/renderer'
-const renderStill = (options: Partial<Parameters<typeof rs>[0]>) => {}
-// ---cut---
-renderStill({
-  // ... other arguments
-  onError: (err: Error) => {
-    // Handle error here
-  }
-})
-```
-
 ### `overwrite?`
 
 _optional - default `true`_
