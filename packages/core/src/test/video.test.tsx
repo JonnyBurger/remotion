@@ -56,6 +56,18 @@ describe('Render correctly with props', () => {
 			)
 		).not.toThrow();
 	});
+	test('It should render Video with children source', () => {
+		expect(() =>
+			render(
+				<Wrapper>
+					<Video>
+						<source src="test-path-1" />
+						<source src="test-path-2" />
+					</Video>
+				</Wrapper>
+			)
+		).not.toThrow();
+	});
 	test('It should render Video with endAt props', () => {
 		expect(() =>
 			render(

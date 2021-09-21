@@ -52,6 +52,19 @@ const VideoForDevelopmentRefForwardingFunction: React.ForwardRefRenderFunction<
 		return videoRef.current as HTMLVideoElement;
 	});
 
+	if (props.children) {
+		return (
+			<video
+				ref={videoRef}
+				muted={muted || mediaMuted}
+				playsInline
+				{...nativeProps}
+			>
+				{props.children}
+			</video>
+		);
+	}
+
 	return (
 		<video
 			ref={videoRef}

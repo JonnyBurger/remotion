@@ -65,7 +65,7 @@ const VideoForRenderingForwardFunction: React.ForwardRefRenderFunction<
 	});
 
 	useEffect(() => {
-		if (!props.src) {
+		if (!props.src && !props.children) {
 			throw new Error('No src passed');
 		}
 
@@ -73,16 +73,18 @@ const VideoForRenderingForwardFunction: React.ForwardRefRenderFunction<
 			return;
 		}
 
-		registerAsset({
-			type: 'video',
-			src: getAbsoluteSrc(props.src),
-			id,
-			frame: absoluteFrame,
-			volume,
-			isRemote: isRemoteAsset(getAbsoluteSrc(props.src)),
-			mediaFrame: frame,
-			playbackRate: playbackRate ?? 1,
-		});
+		if (props.src) {
+			registerAsset({
+				type: 'video',
+				src: getAbsoluteSrc(props.src),
+				id,
+				frame: absoluteFrame,
+				volume,
+				isRemote: isRemoteAsset(getAbsoluteSrc(props.src)),
+				mediaFrame: frame,
+				playbackRate: playbackRate ?? 1,
+			});
+		}
 
 		return () => unregisterAsset(id);
 	}, [
@@ -95,6 +97,7 @@ const VideoForRenderingForwardFunction: React.ForwardRefRenderFunction<
 		frame,
 		absoluteFrame,
 		playbackRate,
+		props.children,
 	]);
 
 	useImperativeHandle(ref, () => {
@@ -102,7 +105,7 @@ const VideoForRenderingForwardFunction: React.ForwardRefRenderFunction<
 	});
 
 	useEffect(() => {
-		if (!videoRef.current) {
+		if (!videoRef.current || props.children) {
 			return;
 		}
 
@@ -172,9 +175,18 @@ const VideoForRenderingForwardFunction: React.ForwardRefRenderFunction<
 		videoConfig.fps,
 		frame,
 		mediaStartsAt,
+		props.children,
 	]);
 
-	return <video ref={videoRef} {...props} onError={onError} />;
+	if (props.src) {
+		return <video ref={videoRef} {...props} onError={onError} />;
+	}
+
+	return (
+		<video ref={videoRef} {...props} onError={onError}>
+			{props.children}
+		</video>
+	);
 };
 
 export const VideoForRendering = forwardRef(VideoForRenderingForwardFunction);
