@@ -99,7 +99,7 @@ import {renderFrames} from '@remotion/renderer'
 
 await renderFrames({
   config: video,
-  webpackBundle: bundled,
+  serveUrl: bundled,
   onStart: () => undefined,
   onFrameUpdate: (f) => undefined,
   parallelism: null,

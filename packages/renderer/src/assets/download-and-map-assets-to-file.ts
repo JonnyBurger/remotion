@@ -78,14 +78,25 @@ export const getSanitizedFilenameForAssetUrl = ({
 	src,
 	isRemote,
 	webpackBundle,
+	downloadDir,
 }: {
 	src: string;
 	isRemote: boolean;
-	webpackBundle: string;
+	webpackBundle: string | null;
+	downloadDir: string;
 }) => {
 	const {pathname, search} = new URL(src);
 
+	// There is always a webpack bundle, except when we are
+	// in Lambda. Also in Lambda, all assets are remote.
+
+	// Therefore we assert that if an asset is local and no Webpack bundle
+	// is available, it is an error
 	if (!isRemote) {
+		if (!webpackBundle) {
+			throw new TypeError('Expected webpack bundle');
+		}
+
 		return path.join(webpackBundle, sanitizeFilename(pathname));
 	}
 
@@ -99,24 +110,27 @@ export const getSanitizedFilenameForAssetUrl = ({
 		''
 	);
 	return path.join(
-		webpackBundle,
+		downloadDir,
 		sanitizeFilename(hashedFileName + fileExtension)
 	);
 };
 
 export const downloadAndMapAssetsToFileUrl = async ({
 	localhostAsset,
-	webpackBundle,
+	downloadDir,
 	onDownload,
+	webpackBundle,
 }: {
 	localhostAsset: TAsset;
-	webpackBundle: string;
+	downloadDir: string;
 	onDownload: (src: string) => void;
+	webpackBundle: string | null;
 }): Promise<TAsset> => {
 	const newSrc = getSanitizedFilenameForAssetUrl({
 		src: localhostAsset.src,
 		isRemote: localhostAsset.isRemote,
 		webpackBundle,
+		downloadDir,
 	});
 
 	if (localhostAsset.isRemote) {

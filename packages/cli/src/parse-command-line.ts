@@ -18,6 +18,7 @@ export type CommandLineOptions = {
 	['prores-profile']: ProResProfile;
 	['bundle-cache']: string;
 	['env-file']: string;
+	['frames-per-lambda']: number;
 	codec: Codec;
 	concurrency: number;
 	config: string;
@@ -39,7 +40,9 @@ export const parsedCli = minimist<CommandLineOptions>(process.argv.slice(2), {
 	boolean: ['force', 'overwrite', 'sequence', 'help'],
 });
 
-export const parseCommandLine = (type: 'still' | 'sequence') => {
+export const parseCommandLine = (
+	type: 'still' | 'sequence' | 'lambda' | 'preview'
+) => {
 	if (parsedCli['pixel-format']) {
 		Config.Output.setPixelFormat(parsedCli['pixel-format']);
 	}
@@ -94,6 +97,10 @@ export const parseCommandLine = (type: 'still' | 'sequence') => {
 		}
 
 		Internals.setStillFrame(Number(parsedCli.frame));
+	}
+
+	if (parsedCli['frames-per-lambda']) {
+		Internals.setFramesPerLambda(parsedCli['frames-per-lambda']);
 	}
 
 	if (parsedCli.png) {

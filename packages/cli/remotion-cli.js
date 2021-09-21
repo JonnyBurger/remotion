@@ -1,4 +1,7 @@
 #! /usr/bin/env node
+const dotenv = require('dotenv');
+dotenv.config();
+
 const {cli} = require('./dist/index');
 
 cli()

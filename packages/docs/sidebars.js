@@ -1,4 +1,42 @@
 module.exports = {
+  lambdaSidebar: [
+    {
+      type: "link",
+      label: "← Back to main docs",
+      href: "/docs",
+    },
+    "lambda",
+    "lambda-cli",
+    "lambda-setup",
+    "lambda-permissions",
+    "lambda-region-selection",
+    "lambda-runtime",
+    "lambda-faq",
+    {
+      collapsed: false,
+      type: "category",
+      label: "Node.JS APIs",
+      items: [
+        "estimateprice",
+        "deployfunction",
+        "deletefunction",
+        "getfunctioninfo",
+        "getfunctions",
+        "deletesite",
+        "deploysite",
+        "ensurelambdabinaries",
+        "getuserpolicy",
+        "getrolepolicy",
+        "getsites",
+        "getorcreatebucket",
+        "getrenderprogress",
+        "rendervideoonlambda",
+        "renderstillonlambda",
+        "simulatepermissions",
+      ],
+    },
+    "lambda-changelog",
+  ],
   someSidebar: [
     {
       collapsed: false,
@@ -86,6 +124,11 @@ module.exports = {
         "use-audio-data",
         "visualize-audio",
       ],
+    },
+    {
+      type: "link",
+      href: "/docs/lambda",
+      label: "API - @remotion/lambda",
     },
     "player",
     {

@@ -17,7 +17,6 @@ import {openBrowser} from './open-browser';
 import {Pool} from './pool';
 import {provideScreenshot} from './provide-screenshot';
 import {seekToFrame} from './seek-to-frame';
-import {serveStatic} from './serve-static';
 import {setPropsAndEnv} from './set-props-and-env';
 import {OnErrorInfo, OnStartData, RenderFramesOutput} from './types';
 
@@ -29,30 +28,34 @@ export const renderFrames = async ({
 	outputDir,
 	onStart,
 	inputProps,
-	envVariables = {},
-	webpackBundle,
 	quality,
 	imageFormat = DEFAULT_IMAGE_FORMAT,
-	browser = Internals.DEFAULT_BROWSER,
 	frameRange,
-	dumpBrowserLogs = false,
 	puppeteerInstance,
+	serveUrl,
 	onError,
+	envVariables,
 	browserExecutable,
+	dumpBrowserLogs,
+	browser,
 }: {
 	config: VideoConfig;
 	compositionId: string;
 	onStart: (data: OnStartData) => void;
-	onFrameUpdate: (f: number) => void;
+	onFrameUpdate: (
+		framesRendered: number,
+		src: string,
+		frameIndex: number
+	) => void;
 	outputDir: string;
 	inputProps: unknown;
 	envVariables?: Record<string, string>;
-	webpackBundle: string;
 	imageFormat: ImageFormat;
 	parallelism?: number | null;
 	quality?: number;
 	browser?: Browser;
 	frameRange?: FrameRange | null;
+	serveUrl: string;
 	dumpBrowserLogs?: boolean;
 	puppeteerInstance?: PuppeteerBrowser;
 	browserExecutable?: BrowserExecutable;
@@ -86,14 +89,13 @@ export const renderFrames = async ({
 
 	const actualParallelism = getActualConcurrency(parallelism ?? null);
 
-	const [{port, close}, browserInstance] = await Promise.all([
-		serveStatic(webpackBundle),
+	const browserInstance =
 		puppeteerInstance ??
-			openBrowser(browser, {
-				shouldDumpIo: dumpBrowserLogs,
-				browserExecutable,
-			}),
-	]);
+		(await openBrowser(browser ?? Internals.DEFAULT_BROWSER, {
+			shouldDumpIo: dumpBrowserLogs,
+			browserExecutable,
+		}));
+
 	const pages = new Array(actualParallelism).fill(true).map(async () => {
 		const page = await browserInstance.newPage();
 		page.setViewport({
@@ -105,6 +107,7 @@ export const renderFrames = async ({
 			onError?.({error: err, frame: null});
 		};
 
+		page.on('error', errorCallback);
 		page.on('pageerror', errorCallback);
 
 		const initialFrame =
@@ -118,12 +121,13 @@ export const renderFrames = async ({
 			inputProps,
 			envVariables,
 			page,
-			port,
+			serveUrl,
 			initialFrame,
 		});
 
-		const site = `http://localhost:${port}/index.html?composition=${compositionId}`;
+		const site = `${serveUrl}/index.html?composition=${compositionId}`;
 		await page.goto(site);
+		page.off('error', errorCallback);
 		page.off('pageerror', errorCallback);
 		return page;
 	});
@@ -133,13 +137,10 @@ export const renderFrames = async ({
 	const pool = new Pool(puppeteerPages);
 
 	const frameCount = getFrameCount(config.durationInFrames, frameRange ?? null);
+	const lastFrameIndex = getFrameToRender(frameRange ?? null, frameCount - 1);
 	// Substract one because 100 frames will be 00-99
 	// --> 2 digits
-	let filePadLength = 0;
-	if (frameCount) {
-		filePadLength = String(frameCount - 1).length;
-	}
-
+	const filePadLength = String(lastFrameIndex).length;
 	let framesRendered = 0;
 
 	onStart({
@@ -157,6 +158,11 @@ export const renderFrames = async ({
 				const errorCallback = (err: Error) => {
 					onError?.({error: err, frame});
 				};
+
+				const output = path.join(
+					outputDir,
+					`element-${paddedIndex}.${imageFormat}`
+				);
 
 				freePage.on('pageerror', errorCallback);
 				try {
@@ -186,10 +192,7 @@ export const renderFrames = async ({
 						quality,
 						options: {
 							frame,
-							output: path.join(
-								outputDir,
-								`element-${paddedIndex}.${imageFormat}`
-							),
+							output,
 						},
 					});
 				}
@@ -199,14 +202,11 @@ export const renderFrames = async ({
 				});
 				pool.release(freePage);
 				framesRendered++;
-				onFrameUpdate(framesRendered);
+				onFrameUpdate(framesRendered, output, frame);
 				freePage.off('pageerror', errorCallback);
 				return collectedAssets;
 			})
 	);
-	close().catch((err) => {
-		console.log('Unable to close web server', err);
-	});
 	stopCycling();
 	// If browser instance was passed in, we close all the pages
 	// we opened.
@@ -225,7 +225,6 @@ export const renderFrames = async ({
 	return {
 		assetsInfo: {
 			assets,
-			bundleDir: webpackBundle,
 		},
 		frameCount,
 	};

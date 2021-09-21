@@ -11,12 +11,14 @@ const chunk = <T>(input: T[], size: number) => {
 
 export const convertAssetsToFileUrls = async ({
 	assets,
-	dir,
+	downloadDir,
 	onDownload,
+	webpackBundle,
 }: {
 	assets: TAsset[][];
-	dir: string;
+	downloadDir: string;
 	onDownload: (src: string) => void;
+	webpackBundle: string | null;
 }): Promise<TAsset[][]> => {
 	const chunks = chunk(assets, 1000);
 	const results: TAsset[][][] = [];
@@ -28,8 +30,9 @@ export const convertAssetsToFileUrls = async ({
 					assetsForFrame.map((a) => {
 						return downloadAndMapAssetsToFileUrl({
 							localhostAsset: a,
-							webpackBundle: dir,
+							downloadDir,
 							onDownload,
+							webpackBundle,
 						});
 					})
 				);

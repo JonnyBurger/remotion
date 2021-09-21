@@ -19,7 +19,7 @@ const renderFrames: (options: {
   }) => void;
   outputDir: string;
   inputProps: unknown;
-  webpackBundle: string;
+  serveUrl: string;
   imageFormat: "png" | "jpeg" | "none";
   envVariables?: Record<string, string>;
   parallelism?: number | null;
@@ -75,9 +75,9 @@ A `string` specifying the directory (absolute path) to which frames should be sa
 
 [Custom props which will be passed to the component.](/docs/parametrized-rendering) Useful for rendering videos with dynamic content. Can be an object of any shape.
 
-### `webpackBundle`
+### `serveUrl`
 
-A `string` specifying the location of the bundled Remotion project.
+TODO: Update API for serveUrl
 
 ### `imageFormat`
 

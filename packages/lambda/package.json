@@ -1,0 +1,61 @@
+{
+	"name": "@remotion/lambda",
+	"version": "2.3.4",
+	"description": "Utility functions for audio and video",
+	"main": "dist/index.js",
+	"sideEffects": false,
+	"bin": {
+		"remotion-lambda": "remotion-lambda-cli.js"
+	},
+	"module": "true",
+	"scripts": {
+		"test": "eslint src --ext ts,tsx && tsc && jest",
+		"watch": "tsc -w",
+		"build": "tsc -d",
+		"start": "ts-node src/run.ts"
+	},
+	"author": "",
+	"license": "MIT",
+	"repository": {
+		"url": "https://github.com/JonnyBurger/remotion"
+	},
+	"dependencies": {
+		"@aws-sdk/client-iam": "^3.18.0",
+		"@aws-sdk/client-lambda": "^3.18.0",
+		"@aws-sdk/client-s3": "^3.18.0",
+		"@aws-sdk/lib-storage": "^3.18.0",
+		"@remotion/bundler": "^2.1.4",
+		"@remotion/cli": "^2.1.4",
+		"@remotion/renderer": "^2.1.4",
+		"aws-policies": "^1.0.1",
+		"dotenv": "^10.0.0",
+		"esbuild": "^0.11.12",
+		"lambdafs": "^2.0.3",
+		"minimist": "^1.2.5",
+		"p-limit": "^3.1.0",
+		"p-retry": "^4.6.0",
+		"prompt": "^1.1.0",
+		"remotion": "^2.1.4",
+		"ts-node": "^9.1.1",
+		"zip-lib": "^0.7.2"
+	},
+	"peerDependencies": {
+		"react": "^17.0.1",
+		"react-dom": "^17.0.1"
+	},
+	"devDependencies": {
+		"@jonny/eslint-config": "^2.1.210",
+		"@types/node": "^14.14.14",
+		"@types/prompt": "^1.1.0",
+		"@types/jest": "^26.0.23",
+		"eslint": "^7.4.0",
+		"jest": "^26.6.3",
+		"prettier": "^2.0.5",
+		"prettier-plugin-organize-imports": "^1.1.1",
+		"ts-jest": "^26.5.6",
+		"typescript": "^4.1.2"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

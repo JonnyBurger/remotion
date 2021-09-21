@@ -1,0 +1,15 @@
+{
+	"extends": "@jonny",
+	"rules": {
+		"no-console": "off",
+		"ts-exports/unused-exports": "off"
+	},
+	"overrides": [
+		{
+			"files": "./src/cli/**",
+			"rules": {
+				"no-console": "error"
+			}
+		}
+	]
+}

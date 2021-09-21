@@ -1,4 +1,3 @@
-import execa from 'execa';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -27,6 +26,7 @@ export const bundle = async (
 		webpackOverride?: WebpackOverrideFn;
 		outDir?: string;
 		enableCaching?: boolean;
+		publicPath?: string;
 	}
 ): Promise<string> => {
 	const outDir = await prepareOutDir(options?.outDir ?? null);
@@ -39,8 +39,8 @@ export const bundle = async (
 			webpackOverride:
 				options?.webpackOverride ?? Internals.getWebpackOverrideFn(),
 			onProgressUpdate,
-			enableCaching:
-				options?.enableCaching ?? Internals.DEFAULT_WEBPACK_CACHE_ENABLED,
+			enableCaching: options?.enableCaching ?? Internals.getWebpackCaching(),
+			publicPath: options?.publicPath ?? '/',
 			maxTimelineTracks: 15,
 		}),
 	]);
@@ -54,11 +54,15 @@ export const bundle = async (
 	}
 
 	const indexHtmlDir = path.join(__dirname, '..', 'web', 'index.html');
-	if (process.platform === 'win32') {
-		await execa('copy', [indexHtmlDir, outDir]);
-	} else {
-		await execa('cp', [indexHtmlDir, outDir]);
-	}
+	const content = await fs.promises.readFile(indexHtmlDir, {
+		encoding: 'utf-8',
+	});
+	const withPublicPath = content.replace(
+		/%PUBLIC_PATH%/g,
+		options?.publicPath ?? '/'
+	);
+	const outPath = path.join(outDir, 'index.html');
+	await fs.promises.writeFile(outPath, withPublicPath);
 
 	return outDir;
 };

@@ -30,7 +30,7 @@ test('Should create a basic filter correctly', () => {
 			videoTrackCount: 1,
 		})[0].filter
 	).toBe(
-		'[1:a]atrim=0.000:0.667,adelay=0|0,atempo=1.00000,volume=1:eval=once[a1]'
+		'[1:a]apad,atrim=0.000:0.667,adelay=0|0,atempo=1.00000,volume=1:eval=once[a1]'
 	);
 });
 
@@ -52,7 +52,7 @@ test('Should handle trim correctly', () => {
 			videoTrackCount: 1,
 		})[0].filter
 	).toBe(
-		'[1:a]atrim=0.333:1.000,adelay=0|0,atempo=1.00000,volume=1:eval=once[a1]'
+		'[1:a]apad,atrim=0.333:1.000,adelay=0|0,atempo=1.00000,volume=1:eval=once[a1]'
 	);
 });
 
@@ -75,7 +75,7 @@ test('Should handle delay correctly', () => {
 			videoTrackCount: 1,
 		})[0].filter
 	).toBe(
-		'[1:a]atrim=0.333:1.000,adelay=2667|2667,atempo=1.00000,volume=1:eval=once[a1]'
+		'[1:a]apad,atrim=0.333:1.000,adelay=2667|2667,atempo=1.00000,volume=1:eval=once[a1]'
 	);
 });
 
@@ -98,7 +98,7 @@ test('Should offset multiple channels', () => {
 			videoTrackCount: 1,
 		})[0].filter
 	).toBe(
-		'[1:a]atrim=0.333:1.000,adelay=2667|2667|2667|2667,atempo=1.00000,volume=1:eval=once[a1]'
+		'[1:a]apad,atrim=0.333:1.000,adelay=2667|2667|2667|2667,atempo=1.00000,volume=1:eval=once[a1]'
 	);
 });
 
@@ -137,7 +137,7 @@ test('Should calculate correct indices even if some muted channels are removed b
 		});
 	expect(makeFilters()[0].filter).toBe(
 		// Should be index 2 - make sure that index 1 is not current, because it is muted
-		'[2:a]atrim=0.333:1.000,adelay=2667|2667|2667|2667,atempo=1.00000,volume=1:eval=once[a2]'
+		'[2:a]apad,atrim=0.333:1.000,adelay=2667|2667|2667|2667,atempo=1.00000,volume=1:eval=once[a2]'
 	);
 
 	// Also test basic case: if first one is unmuted, both channels are there again
@@ -145,9 +145,9 @@ test('Should calculate correct indices even if some muted channels are removed b
 		channels: 1,
 	});
 	expect(makeFilters()[0].filter).toBe(
-		'[1:a]atrim=0.333:3.667,adelay=2667|2667,atempo=1.00000,volume=2:eval=once[a1]'
+		'[1:a]apad,atrim=0.333:3.667,adelay=2667|2667,atempo=1.00000,volume=2:eval=once[a1]'
 	);
 	expect(makeFilters()[1].filter).toBe(
-		'[2:a]atrim=0.333:1.000,adelay=2667|2667|2667|2667,atempo=1.00000,volume=2:eval=once[a2]'
+		'[2:a]apad,atrim=0.333:1.000,adelay=2667|2667|2667|2667,atempo=1.00000,volume=2:eval=once[a2]'
 	);
 });

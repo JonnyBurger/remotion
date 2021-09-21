@@ -19,5 +19,9 @@ export const getAudioCodecName = (codec: Codec): string | null => {
 		return 'libmp3lame';
 	}
 
+	if (codec === 'wav') {
+		return 'pcm_s16le';
+	}
+
 	return null;
 };

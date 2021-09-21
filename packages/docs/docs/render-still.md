@@ -42,7 +42,7 @@ if (!composition) {
 
 await renderStill({
   composition,
-  webpackBundle: bundleLocation,
+  serveUrl: bundleLocation,
   output: '/tmp/still.png',
   inputProps: {
     custom: 'data'
@@ -58,9 +58,9 @@ Takes an object with the following properties:
 
 A video composition object, consisting of `id`, `height`, `width`, `durationInFrames` and `fps`. Use [`getCompositions()`](/docs/get-compositions) to get a list of available video configs.
 
-### `webpackBundle`
+### `serveUrl`
 
-The absolute location of your webpack bundle. Use [`bundle()`](/docs/bundle) to bundle your project programmatically.
+TODO: Document serveUrl behavior
 
 ### `output`
 

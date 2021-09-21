@@ -1,4 +1,7 @@
 import execa from 'execa';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import {
 	Codec,
 	ImageFormat,
@@ -24,6 +27,10 @@ import {resolveAssetSrc} from './resolve-asset-src';
 import {validateEvenDimensionsWithCodec} from './validate-even-dimensions-with-codec';
 import {validateFfmpeg} from './validate-ffmpeg';
 
+const makeAssetsDownloadTmpDir = (): Promise<string> => {
+	return fs.promises.mkdtemp(path.join(os.tmpdir(), 'remotion-assets-dir'));
+};
+
 // eslint-disable-next-line complexity
 export const stitchFramesToVideo = async (options: {
 	dir: string;
@@ -44,6 +51,8 @@ export const stitchFramesToVideo = async (options: {
 	onDownload?: (src: string) => void;
 	proResProfile?: ProResProfile;
 	verbose?: boolean;
+	downloadDir?: string;
+	webpackBundle: string | null;
 }): Promise<void> => {
 	Internals.validateDimension(
 		options.height,
@@ -102,8 +111,9 @@ export const stitchFramesToVideo = async (options: {
 		}),
 		convertAssetsToFileUrls({
 			assets: options.assetsInfo.assets,
-			dir: options.assetsInfo.bundleDir,
+			downloadDir: options.downloadDir ?? (await makeAssetsDownloadTmpDir()),
 			onDownload: options.onDownload ?? (() => undefined),
+			webpackBundle: options.webpackBundle,
 		}),
 	]);
 
@@ -152,6 +162,8 @@ export const stitchFramesToVideo = async (options: {
 			  ['-c:v', encoderName]
 			: // If only exporting audio, we drop the video explicitly
 			  ['-vn'],
+		['-ar', '44100'],
+		['-ac', '2'],
 		proResProfileName ? ['-profile:v', proResProfileName] : null,
 		supportsCrf ? ['-crf', String(crf)] : null,
 		isAudioOnly ? null : ['-pix_fmt', pixelFormat],

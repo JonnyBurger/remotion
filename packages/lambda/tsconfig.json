@@ -1,0 +1,16 @@
+{
+	"extends": "../tsconfig.settings.json",
+	"compilerOptions": {
+		"composite": true,
+		"rootDir": "src",
+		"outDir": "dist",
+		"lib": ["es2019", "dom"]
+	},
+	"include": ["src"],
+	"exclude": ["**/__mocks__/*"],
+	"references": [
+		{"path": "../core"},
+		{"path": "../bundler"},
+		{"path": "../renderer"}
+	]
+}

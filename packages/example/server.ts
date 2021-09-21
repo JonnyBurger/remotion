@@ -61,7 +61,6 @@ app.get('/', async (req, res) => {
 		);
 		const {assetsInfo} = await renderFrames({
 			config: video,
-			webpackBundle: bundled,
 			onStart: () => console.log('Rendering frames...'),
 			onFrameUpdate: (f) => {
 				if (f % 10 === 0) {
@@ -75,6 +74,9 @@ app.get('/', async (req, res) => {
 			},
 			compositionId,
 			imageFormat: 'jpeg',
+			// TODO: Update or remove server
+			serveUrl: 'fsdf',
+			puppeteerInstance: null,
 		});
 
 		const finalOutput = path.join(tmpDir, 'out.mp4');
@@ -87,6 +89,7 @@ app.get('/', async (req, res) => {
 			outputLocation: finalOutput,
 			imageFormat: 'jpeg',
 			assetsInfo,
+			webpackBundle: bundled,
 		});
 		cache.set(JSON.stringify(req.query), finalOutput);
 		sendFile(finalOutput);

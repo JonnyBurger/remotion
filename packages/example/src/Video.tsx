@@ -119,6 +119,10 @@ export const Index: React.FC = () => {
 				height={1920}
 				fps={30}
 				durationInFrames={90}
+				defaultProps={{
+					line1: 'Test',
+					line2: 'text',
+				}}
 			/>
 			<Composition
 				id="mdx-test"

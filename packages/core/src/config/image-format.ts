@@ -3,6 +3,7 @@ import {PixelFormat} from './pixel-format';
 const validOptions = ['png', 'jpeg', 'none'] as const;
 
 export type ImageFormat = typeof validOptions[number];
+export type StillImageFormat = 'png' | 'jpeg';
 
 let currentImageFormat: ImageFormat | undefined;
 

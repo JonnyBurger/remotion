@@ -10,8 +10,11 @@ export const createProgressBar = (): {
 		return {update: () => false};
 	}
 
+	return createOverwriteableCliOutput();
+};
+
+export const createOverwriteableCliOutput = () => {
 	const diff = ansiDiff();
-	process.stdout.write('');
 	return {
 		update: (up: string): boolean => process.stdout.write(diff.update(up)),
 	};

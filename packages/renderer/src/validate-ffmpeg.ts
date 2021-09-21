@@ -1,4 +1,5 @@
 import execa from 'execa';
+import fs from 'fs';
 import os from 'os';
 
 const existsMap: {[key: string]: boolean} = {};
@@ -6,6 +7,11 @@ const existsMap: {[key: string]: boolean} = {};
 export const binaryExists = async (name: 'ffmpeg' | 'brew') => {
 	if (typeof existsMap[name] !== 'undefined') {
 		return existsMap[name];
+	}
+
+	// On AWS lambda, look for a specific path
+	if (name === 'ffmpeg' && process.env.LAMBDA_TASK_ROOT) {
+		return fs.existsSync('/opt/bin/ffmpeg');
 	}
 
 	const isWin = os.platform() === 'win32';

@@ -86,6 +86,12 @@ _optional_
 
 The constant rate factor of the output, a parameter which controls quality. See [here](/docs/config#setcrf) for more information about this parameter. Default is depending on the codec.
 
+### `proResProfile?`
+
+_optional_
+
+Sets a ProRes profile. Only applies to videos rendered with `prores` codec. See [Encoding guide](/docs/encoding/#controlling-quality-using-prores-profile) for possible options.
+
 ### `onProgress?`
 
 _optional_

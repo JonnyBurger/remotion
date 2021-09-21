@@ -1,7 +1,10 @@
 import {bundle, BundlerInternals} from '@remotion/bundler';
 import {Internals} from 'remotion';
 import {Log} from './log';
-import {createProgressBar, makeBundlingProgress} from './progress-bar';
+import {
+	createOverwriteableCliOutput,
+	makeBundlingProgress,
+} from './progress-bar';
 
 export const bundleOnCli = async (fullPath: string, steps: number) => {
 	const shouldCache = Internals.getWebpackCaching();
@@ -12,7 +15,7 @@ export const bundleOnCli = async (fullPath: string, steps: number) => {
 	}
 
 	const bundleStartTime = Date.now();
-	const bundlingProgress = createProgressBar();
+	const bundlingProgress = createOverwriteableCliOutput();
 	const bundled = await bundle(
 		fullPath,
 		(progress) => {

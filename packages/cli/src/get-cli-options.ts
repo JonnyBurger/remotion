@@ -28,13 +28,14 @@ const getAndValidateFrameRange = () => {
 	return frameRange;
 };
 
-const getFinalCodec = async () => {
+const getFinalCodec = async (options: {isLambda: boolean}) => {
 	const userCodec = Internals.getOutputCodecOrUndefined();
 
 	const codec = Internals.getFinalOutputCodec({
 		codec: userCodec,
-		fileExtension: getUserPassedFileExtension(),
+		fileExtension: options.isLambda ? null : getUserPassedFileExtension(),
 		emitWarning: true,
+		isLambda: options.isLambda,
 	});
 	if (
 		codec === 'vp8' &&
@@ -168,18 +169,25 @@ const getAndValidateBrowser = async (browserExecutable: BrowserExecutable) => {
 	return browser;
 };
 
-export const getCliOptions = async (type: 'still' | 'series') => {
+export const getCliOptions = async (options: {
+	isLambda: boolean;
+	type: 'still' | 'series';
+}) => {
 	const frameRange = getAndValidateFrameRange();
+
+	const codec = await getFinalCodec({isLambda: options.isLambda});
 	const shouldOutputImageSequence =
-		type === 'still'
+		options.type === 'still'
 			? true
 			: await getAndValidateShouldOutputImageSequence(frameRange);
-	const codec = await getFinalCodec();
-	const outputFile = getOutputFilename({
-		codec,
-		imageSequence: shouldOutputImageSequence,
-		type,
-	});
+	const outputFile = options.isLambda
+		? null
+		: getOutputFilename({
+				codec,
+				imageSequence: shouldOutputImageSequence,
+				type: options.type,
+		  });
+
 	const overwrite = Internals.getShouldOverwrite();
 	const crf = getAndValidateCrf(shouldOutputImageSequence, codec);
 	const pixelFormat = getAndValidatePixelFormat(codec);
@@ -200,13 +208,16 @@ export const getCliOptions = async (type: 'still' | 'series') => {
 		inputProps: getInputProps(),
 		envVariables: await getEnvironmentVariables(),
 		quality: Internals.getQuality(),
+		absoluteOutputFile: outputFile
+			? getAndValidateAbsoluteOutputFile(outputFile, overwrite)
+			: null,
 		browser: await getAndValidateBrowser(browserExecutable),
-		absoluteOutputFile: getAndValidateAbsoluteOutputFile(outputFile, overwrite),
 		crf,
 		pixelFormat,
 		imageFormat,
 		proResProfile,
 		stillFrame: Internals.getStillFrame(),
 		browserExecutable,
+		framesPerLambda: Internals.getFramesPerLambda(),
 	};
 };

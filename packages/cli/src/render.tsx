@@ -18,7 +18,7 @@ import {initializeRenderCli} from './initialize-render-cli';
 import {Log} from './log';
 import {parsedCli} from './parse-command-line';
 import {
-	createProgressBar,
+	createOverwriteableCliOutput,
 	makeRenderingProgress,
 	makeStitchingProgress,
 } from './progress-bar';
@@ -65,7 +65,13 @@ export const render = async () => {
 		pixelFormat,
 		imageFormat,
 		browserExecutable,
-	} = await getCliOptions('series');
+	} = await getCliOptions({isLambda: false, type: 'series'});
+
+	if (!absoluteOutputFile) {
+		throw new Error(
+			'assertion error - expected absoluteOutputFile to not be null'
+		);
+	}
 
 	await checkAndValidateFfmpegVersion();
 
@@ -73,6 +79,7 @@ export const render = async () => {
 		browserExecutable,
 		shouldDumpIo: Internals.Logging.isEqualOrBelowLogLevel('verbose'),
 	});
+
 	if (shouldOutputImageSequence) {
 		fs.mkdirSync(absoluteOutputFile, {
 			recursive: true,
@@ -83,8 +90,29 @@ export const render = async () => {
 
 	const bundled = await bundleOnCli(fullPath, steps);
 
+	const {port, close} = await RenderInternals.serveStatic(bundled);
+
+	const serveUrl = `http://localhost:${port}`;
+
 	const openedBrowser = await browserInstance;
-	const comps = await getCompositions(bundled, {
+	let i = 0;
+
+	// Cycle through the browser and focus each tabs to activate contexts
+	// like Mapbox GL.
+	// TODO: Move this out of the Lambda branch
+	const interval = setInterval(() => {
+		openedBrowser
+			.pages()
+			.then((pages) => {
+				const currentPage = pages[i % pages.length];
+				i++;
+				if (!currentPage.isClosed()) {
+					currentPage.bringToFront();
+				}
+			})
+			.catch((err) => Log.error(err));
+	}, 100);
+	const comps = await getCompositions(serveUrl, {
 		browser,
 		inputProps,
 		browserInstance: openedBrowser,
@@ -107,9 +135,13 @@ export const render = async () => {
 		? absoluteOutputFile
 		: await fs.promises.mkdtemp(path.join(os.tmpdir(), 'react-motion-render'));
 
+	if (!outputDir) {
+		throw new Error('Assertion error: Expected outputDir to not be null');
+	}
+
 	Log.verbose('Output dir', outputDir);
 
-	const renderProgress = createProgressBar();
+	const renderProgress = createOverwriteableCliOutput();
 	let totalFrames = 0;
 	const renderStart = Date.now();
 	const {assetsInfo} = await renderFrames({
@@ -143,16 +175,16 @@ export const render = async () => {
 		},
 		inputProps,
 		envVariables,
-		webpackBundle: bundled,
 		imageFormat,
 		quality,
 		browser,
 		frameRange: frameRange ?? null,
-		dumpBrowserLogs: Internals.Logging.isEqualOrBelowLogLevel('verbose'),
 		puppeteerInstance: openedBrowser,
+		serveUrl,
 	});
 
 	const closeBrowserPromise = openedBrowser.close();
+	clearInterval(interval);
 	renderProgress.update(
 		makeRenderingProgress({
 			frames: totalFrames,
@@ -173,7 +205,7 @@ export const render = async () => {
 			throw new TypeError('CRF is unexpectedly not a number');
 		}
 
-		const stitchingProgress = createProgressBar();
+		const stitchingProgress = createOverwriteableCliOutput();
 
 		stitchingProgress.update(
 			makeStitchingProgress({
@@ -211,6 +243,7 @@ export const render = async () => {
 			onDownload: (src: string) => {
 				Log.info('Downloading asset... ', src);
 			},
+			webpackBundle: bundled,
 			verbose: Internals.Logging.isEqualOrBelowLogLevel('verbose'),
 		});
 		stitchingProgress.update(
@@ -231,6 +264,7 @@ export const render = async () => {
 				(fs.promises.rm ?? fs.promises.rmdir)(bundled, {
 					recursive: true,
 				}),
+				close(),
 			]);
 		} catch (err) {
 			Log.warn('Could not clean up directory.');

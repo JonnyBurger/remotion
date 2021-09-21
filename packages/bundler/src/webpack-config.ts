@@ -21,6 +21,7 @@ export const webpackConfig = ({
 	enableCaching = Internals.DEFAULT_WEBPACK_CACHE_ENABLED,
 	inputProps,
 	envVariables,
+	publicPath,
 	maxTimelineTracks,
 }: {
 	entry: string;
@@ -32,6 +33,7 @@ export const webpackConfig = ({
 	enableCaching?: boolean;
 	inputProps?: object;
 	envVariables?: Record<string, string>;
+	publicPath?: string;
 	maxTimelineTracks: number;
 }): WebpackConfiguration => {
 	return webpackOverride({
@@ -91,6 +93,7 @@ export const webpackConfig = ({
 			globalObject: 'this',
 			filename: 'bundle.js',
 			path: outDir,
+			publicPath: publicPath ?? '/',
 		},
 		devServer: {
 			contentBase: path.resolve(__dirname, '..', 'web'),

@@ -12,6 +12,11 @@ import {getDesiredPort} from './get-port';
 import {isUpdateAvailableWithTimeout} from './update-available';
 import {webpackConfig} from './webpack-config';
 
+const indexHtml = fs.readFileSync(
+	path.join(__dirname, '..', 'web', 'index.html'),
+	'utf-8'
+);
+
 export const startServer = async (
 	entry: string,
 	userDefinedComponent: string,
@@ -20,6 +25,7 @@ export const startServer = async (
 		inputProps?: object;
 		envVariables?: Record<string, string>;
 		port?: number;
+		publicPath?: string;
 		maxTimelineTracks?: number;
 	}
 ): Promise<number> => {
@@ -41,7 +47,6 @@ export const startServer = async (
 	});
 	const compiler = webpack(config);
 
-	app.use(express.static(path.join(__dirname, '..', 'web')));
 	app.use(webpackDevMiddleware(compiler));
 	app.use(
 		webpackHotMiddleware(compiler, {
@@ -67,7 +72,8 @@ export const startServer = async (
 	});
 
 	app.use('*', (req, res) => {
-		res.sendFile(path.join(__dirname, '..', 'web', 'index.html'));
+		res.type('text/html');
+		res.end(indexHtml.replace(/%PUBLIC_PATH%/g, options?.publicPath ?? '/'));
 	});
 
 	const desiredPort = options?.port ?? Internals.getServerPort();
