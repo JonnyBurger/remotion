@@ -1,17 +1,10 @@
-import React, {
-	Suspense,
-	useCallback,
-	useContext,
-	useEffect,
-	useState,
-} from 'react';
+import React, {Suspense, useContext, useEffect, useMemo} from 'react';
 import {render} from 'react-dom';
 import {
 	continueRender,
 	delayRender,
 	getInputProps,
 	Internals,
-	LooseAnyComponent,
 	TComposition,
 } from 'remotion';
 
@@ -23,8 +16,6 @@ if (!Root) {
 	throw new Error('Root has not been registered.');
 }
 
-const handle = delayRender();
-
 const Fallback: React.FC = () => {
 	useEffect(() => {
 		const fallback = delayRender();
@@ -34,13 +25,11 @@ const Fallback: React.FC = () => {
 };
 
 const inputProps = getInputProps();
+const handle = delayRender();
 
 const GetVideo = () => {
 	const video = Internals.useVideo();
 	const compositions = useContext(Internals.CompositionManager);
-	const [Component, setComponent] = useState<LooseAnyComponent<unknown> | null>(
-		null
-	);
 
 	useEffect(() => {
 		if (Internals.getIsEvaluation()) {
@@ -56,44 +45,34 @@ const GetVideo = () => {
 		}
 	}, [compositions, compositions.compositions, video]);
 
-	const fetchComponent = useCallback(() => {
+	const style = useMemo(() => {
 		if (!video) {
-			throw new Error('Expected to have video');
+			return {};
 		}
 
-		const Comp = video.component;
-		setComponent(Comp);
+		return {
+			width: video.width,
+			height: video.height,
+			display: 'flex',
+			backgroundColor: 'transparent',
+		};
 	}, [video]);
 
 	useEffect(() => {
 		if (video) {
-			fetchComponent();
-		}
-	}, [fetchComponent, video]);
-
-	useEffect(() => {
-		if (Internals.getIsEvaluation()) {
-			continueRender(handle);
-		} else if (Component) {
 			continueRender(handle);
 		}
-	}, [Component]);
+	}, [video]);
 
 	if (!video) {
 		return null;
 	}
 
+	const Component = video.component;
+
 	return (
 		<Suspense fallback={<Fallback />}>
-			<div
-				id="canvas"
-				style={{
-					width: video.width,
-					height: video.height,
-					display: 'flex',
-					backgroundColor: 'transparent',
-				}}
-			>
+			<div id="canvas" style={style}>
 				{Component ? (
 					<Component {...((video?.props as {}) ?? {})} {...inputProps} />
 				) : null}
