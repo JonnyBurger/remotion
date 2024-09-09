@@ -108,7 +108,7 @@ if (alias !== 'alias') {
 
 const INCLUDE_COMP_BREAKING_GET_COMPOSITIONS = false;
 
-// @ts-expect-error no types
+import GoogleFontsPicker, {googleFontsPickerSchema} from './GoogleFontsPicker';
 import styles from './styles.module.scss';
 
 class Vector2 {
@@ -1448,6 +1448,16 @@ export const Index: React.FC = () => {
 				width={1024}
 			/>
 			<Still id="Emojis" component={EmojiTestbed} height={800} width={1024} />
+			<Composition
+				id="google-fonts-picker"
+				component={GoogleFontsPicker}
+				schema={googleFontsPickerSchema}
+				defaultProps={{}}
+				durationInFrames={10 * 30}
+				fps={30}
+				width={256}
+				height={256}
+			/>
 		</>
 	);
 };

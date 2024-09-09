@@ -21,7 +21,8 @@
 		"url": "https://github.com/remotion-dev/remotion/issues"
 	},
 	"dependencies": {
-		"remotion": "workspace:*"
+		"remotion": "workspace:*",
+		"@remotion/google-fonts": "workspace:*"
 	},
 	"peerDependencies": {
 		"zod": "3.22.3"
