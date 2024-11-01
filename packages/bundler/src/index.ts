@@ -1,17 +1,12 @@
 import {findClosestFolderWithItem, getConfig, internalBundle} from './bundle';
 import {indexHtml} from './index-html';
 import {readRecursively} from './read-recursively';
-import {cacheExists, clearCache} from './webpack-cache';
 import {webpackConfig} from './webpack-config';
-import esbuild = require('esbuild');
-import webpack = require('webpack');
+import webpack = require('@rspack/core');
 
 export const BundlerInternals = {
-	esbuild,
 	webpackConfig,
 	indexHtml,
-	cacheExists,
-	clearCache,
 	getConfig,
 	readRecursively,
 	findClosestFolderWithItem,

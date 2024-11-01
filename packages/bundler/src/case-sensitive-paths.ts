@@ -1,5 +1,5 @@
+import type {Compiler} from '@rspack/core';
 import path from 'path';
-import type {Compiler, InputFileSystem} from 'webpack';
 
 // Inlined from https://github.com/umijs/case-sensitive-paths-webpack-plugin/blob/master/src/index.ts
 
@@ -74,7 +74,7 @@ export class CaseSensitivePathsPlugin {
 				} else {
 					// read directory for the first time
 					deferrer = new Promise((resolve2) => {
-						(this.fs as InputFileSystem).readdir(dir, (_, files = []) => {
+						this.fs!.readdir(dir, (_, files = []) => {
 							// save cache, resolve promise and release deferrer
 							this.cacheMap.set(dir, files as string[]);
 							resolve2(files as string[]);
@@ -138,10 +138,13 @@ export class CaseSensitivePathsPlugin {
 				const {createData = data as typeof data.createData} = data;
 
 				if (
+					createData &&
 					createData.resource &&
 					this.isCheckable(
 						createData.resource,
+						// @ts-expect-error
 						createData.type,
+						// @ts-expect-error
 						createData.resourceResolveData?.context?.issuer,
 					)
 				) {

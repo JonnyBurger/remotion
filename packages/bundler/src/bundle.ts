@@ -1,18 +1,19 @@
 import type {GitSource} from '@remotion/studio-shared';
 import {getProjectName, SOURCE_MAP_ENDPOINT} from '@remotion/studio-shared';
+import type {Configuration, Stats} from '@rspack/core';
+import {rspack} from '@rspack/core';
 import fs, {promises} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {promisify} from 'node:util';
 import {isMainThread} from 'node:worker_threads';
-import webpack from 'webpack';
 import {copyDir} from './copy-dir';
 import {indexHtml} from './index-html';
 import {readRecursively} from './read-recursively';
 import type {WebpackOverrideFn} from './webpack-config';
 import {webpackConfig} from './webpack-config';
 
-const promisified = promisify(webpack);
+const promisified = promisify(rspack);
 
 const prepareOutDir = async (specified: string | null) => {
 	if (specified) {
@@ -44,7 +45,6 @@ const trimTrailingSlash = (p: string): string => {
 export type MandatoryLegacyBundleOptions = {
 	webpackOverride: WebpackOverrideFn;
 	outDir: string | null;
-	enableCaching: boolean;
 	publicPath: string | null;
 	rootDir: string | null;
 	publicDir: string | null;
@@ -70,7 +70,7 @@ export const getConfig = ({
 	maxTimelineTracks: number | null;
 	onProgress?: (progress: number) => void;
 	options?: LegacyBundleOptions;
-}) => {
+}): Promise<Configuration> => {
 	const entry = path.resolve(__dirname, '..', './renderEntry.tsx');
 
 	return webpackConfig({
@@ -82,7 +82,6 @@ export const getConfig = ({
 		onProgress: (p) => {
 			onProgress?.(p);
 		},
-		enableCaching: options?.enableCaching ?? true,
 		maxTimelineTracks,
 		remotionRoot: resolvedRemotionRoot,
 		keyboardShortcutsEnabled: true,
@@ -203,7 +202,7 @@ export const internalBundle = async (
 	}
 
 	const {onProgress, ...options} = actualArgs;
-	const [, config] = await getConfig({
+	const config = await getConfig({
 		outDir,
 		entryPoint,
 		resolvedRemotionRoot,
@@ -224,7 +223,7 @@ export const internalBundle = async (
 		throw new Error('Expected webpack output');
 	}
 
-	const {errors} = output.toJson();
+	const {errors} = (output as Stats).toJson();
 	if (errors !== undefined && errors.length > 0) {
 		throw new Error(errors[0].message + '\n' + errors[0].details);
 	}
@@ -327,7 +326,6 @@ export async function bundle(...args: Arguments): Promise<string> {
 	const result = await internalBundle({
 		bufferStateDelayInMilliseconds:
 			actualArgs.bufferStateDelayInMilliseconds ?? null,
-		enableCaching: actualArgs.enableCaching ?? true,
 		entryPoint: actualArgs.entryPoint,
 		gitSource: actualArgs.gitSource ?? null,
 		ignoreRegisterRootWarning: actualArgs.ignoreRegisterRootWarning ?? false,

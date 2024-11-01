@@ -202,7 +202,6 @@ export const sitesCreateSubcommand = async (
 				};
 				updateProgress(false);
 			},
-			enableCaching: ConfigInternals.getWebpackCaching(),
 			webpackOverride: ConfigInternals.getWebpackOverrideFn() ?? ((f) => f),
 			bypassBucketNameValidation: Boolean(parsedLambdaCli['force-bucket-name']),
 		},

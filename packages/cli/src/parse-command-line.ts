@@ -39,7 +39,6 @@ export type CommandLineOptions = {
 	['image-format']: VideoImageFormat | StillImageFormat;
 	['prores-profile']: ProResProfile;
 	[x264Option.cliFlag]: TypeOfOption<typeof x264Option>;
-	['bundle-cache']: string;
 	['env-file']: string;
 	['ignore-certificate-errors']: string;
 	['disable-web-security']: string;
@@ -114,10 +113,6 @@ export const parseCommandLine = () => {
 
 	if (parsedCli['browser-executable']) {
 		Config.setBrowserExecutable(parsedCli['browser-executable']);
-	}
-
-	if (typeof parsedCli['bundle-cache'] !== 'undefined') {
-		Config.setCachingEnabled(parsedCli['bundle-cache'] !== 'false');
 	}
 
 	if (parsedCli['disable-web-security']) {

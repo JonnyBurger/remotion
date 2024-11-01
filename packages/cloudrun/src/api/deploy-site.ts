@@ -22,7 +22,6 @@ type Options = {
 	onUploadProgress?: (upload: UploadDirProgress) => void;
 	webpackOverride?: WebpackOverrideFn;
 	ignoreRegisterRootWarning?: boolean;
-	enableCaching?: boolean;
 	publicDir?: string | null;
 	rootDir?: string;
 	bypassBucketNameValidation?: boolean;
@@ -85,7 +84,6 @@ export const internalDeploySiteRaw = async ({
 		BundlerInternals.internalBundle({
 			publicPath: `/${bucketName}/${subFolder}/`,
 			webpackOverride: options?.webpackOverride ?? ((f) => f),
-			enableCaching: options?.enableCaching ?? true,
 			publicDir: options?.publicDir ?? null,
 			rootDir: options?.rootDir ?? null,
 			ignoreRegisterRootWarning: options?.ignoreRegisterRootWarning ?? false,

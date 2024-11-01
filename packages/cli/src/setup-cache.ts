@@ -129,18 +129,8 @@ export const bundleOnCli = async ({
 	bufferStateDelayInMilliseconds: number | null;
 	publicPath: string | null;
 }) => {
-	const shouldCache = ConfigInternals.getWebpackCaching();
-
 	const symlinkState: SymbolicLinksState = {
 		symlinks: [],
-	};
-
-	const onProgress = (progress: number) => {
-		bundlingState = {
-			progress: progress / 100,
-			doneIn: null,
-		};
-		updateProgress(false);
 	};
 
 	let copyingState: CopyingState = {
@@ -183,7 +173,6 @@ export const bundleOnCli = async ({
 	};
 
 	const options: MandatoryLegacyBundleOptions = {
-		enableCaching: shouldCache,
 		webpackOverride: ConfigInternals.getWebpackOverrideFn() ?? ((f) => f),
 		rootDir: remotionRoot,
 		publicDir,
@@ -192,33 +181,6 @@ export const bundleOnCli = async ({
 		outDir: outDir ?? null,
 		publicPath,
 	};
-
-	const [hash] = await BundlerInternals.getConfig({
-		outDir: '',
-		entryPoint: fullPath,
-		onProgress,
-		options,
-		resolvedRemotionRoot: remotionRoot,
-		bufferStateDelayInMilliseconds,
-		maxTimelineTracks,
-	});
-	const cacheExistedBefore = BundlerInternals.cacheExists(
-		remotionRoot,
-		'production',
-		hash,
-	);
-	if (cacheExistedBefore !== 'does-not-exist' && !shouldCache) {
-		Log.info({indent, logLevel}, '🧹 Cache disabled but found. Deleting... ');
-		await BundlerInternals.clearCache(remotionRoot, 'production');
-	}
-
-	if (cacheExistedBefore === 'other-exists' && shouldCache) {
-		Log.info(
-			{indent, logLevel},
-			'🧹 Webpack config change detected. Clearing cache... ',
-		);
-		await BundlerInternals.clearCache(remotionRoot, 'production');
-	}
 
 	const bundleStartTime = Date.now();
 	const bundlingProgress = createOverwriteableCliOutput({
@@ -263,20 +225,6 @@ export const bundleOnCli = async ({
 	updateProgress(true);
 
 	Log.verbose({indent, logLevel}, 'Bundled under', bundled);
-	const cacheExistedAfter =
-		BundlerInternals.cacheExists(remotionRoot, 'production', hash) === 'exists';
-
-	if (cacheExistedAfter) {
-		if (
-			cacheExistedBefore === 'does-not-exist' ||
-			cacheExistedBefore === 'other-exists'
-		) {
-			Log.info(
-				{indent, logLevel},
-				'⚡️ Cached bundle. Subsequent renders will be faster.',
-			);
-		}
-	}
 
 	return bundled;
 };

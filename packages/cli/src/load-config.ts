@@ -1,4 +1,4 @@
-import {BundlerInternals} from '@remotion/bundler';
+import esbuild from 'esbuild';
 import fs from 'node:fs';
 import path from 'node:path';
 import {isMainThread} from 'node:worker_threads';
@@ -26,7 +26,7 @@ export const loadConfigFile = async (
 	}
 
 	const virtualOutfile = 'bundle.js';
-	const result = await BundlerInternals.esbuild.build({
+	const result = await esbuild.build({
 		platform: 'node',
 		target: 'node16',
 		bundle: true,

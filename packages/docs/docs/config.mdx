@@ -39,18 +39,6 @@ Config.overrideWebpackConfig((currentConfiguration) => {
 });
 ```
 
-## setCachingEnabled()<AvailableFrom v="2.0.0" />
-
-Enable or disable Webpack caching. Default is `true` which will make the Webpack step in the first run a bit slower but will massively speed up subsequent runs.
-
-```ts twoslash title="remotion.config.ts"
-import {Config} from '@remotion/cli/config';
-// ---cut---
-Config.setCachingEnabled(false);
-```
-
-The [command line flag](/docs/cli/render#--bundle-cache) `--bundle-cache` will take precedence over this option.
-
 ## setStudioPort()<AvailableFrom v="4.0.61" />
 
 Set the HTTP port for the Studio.

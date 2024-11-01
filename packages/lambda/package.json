@@ -36,6 +36,7 @@
 		"@remotion/serverless": "workspace:*",
 		"mime-types": "2.1.34",
 		"remotion": "workspace:*",
+		"esbuild": "0.18.6",
 		"zod": "3.23.8"
 	},
 	"devDependencies": {

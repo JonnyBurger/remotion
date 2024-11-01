@@ -1,17 +1,13 @@
-import {createHash} from 'node:crypto';
+import type {Configuration} from '@rspack/core';
+import webpack, {ProgressPlugin} from '@rspack/core';
+import ReactRefreshPlugin from '@rspack/plugin-react-refresh';
 import ReactDOM from 'react-dom';
-import webpack, {ProgressPlugin} from 'webpack';
-import type {LoaderOptions} from './esbuild-loader/interfaces';
-import {ReactFreshWebpackPlugin} from './fast-refresh';
-import {jsonStringifyWithCircularReferences} from './stringify-with-circular-references';
-import {getWebpackCacheName} from './webpack-cache';
-import esbuild = require('esbuild');
-
 import {NoReactInternals} from 'remotion/no-react';
-import type {Configuration} from 'webpack';
 import {CaseSensitivePathsPlugin} from './case-sensitive-paths';
-import {AllowDependencyExpressionPlugin} from './hide-expression-dependency';
-import {AllowOptionalDependenciesPlugin} from './optional-dependencies';
+import {
+	OPTIONAL_DEPENDENCIES,
+	SOURCE_MAP_IGNORE,
+} from './optional-dependencies';
 export type WebpackConfiguration = Configuration;
 
 export type WebpackOverrideFn = (
@@ -33,17 +29,31 @@ const shouldUseReactDomClient = NoReactInternals.ENABLE_V5_BREAKING_CHANGES
 	? true
 	: parseInt(reactDomVersion, 10) >= 18;
 
-const esbuildLoaderOptions: LoaderOptions = {
-	target: 'chrome85',
-	loader: 'tsx',
-	implementation: esbuild,
-};
-
 type Truthy<T> = T extends false | '' | 0 | null | undefined ? never : T;
 
 function truthy<T>(value: T): value is Truthy<T> {
 	return Boolean(value);
 }
+
+const options = (environment: 'development' | 'production') => ({
+	jsc: {
+		parser: {
+			syntax: 'typescript',
+			tsx: true,
+		},
+		transform: {
+			react: {
+				runtime: 'automatic',
+				development: environment === 'development',
+				refresh: environment === 'development',
+			},
+		},
+		externalHelpers: true,
+	},
+	env: {
+		targets: 'Chrome >= 85', // browser compatibility
+	},
+});
 
 export const webpackConfig = async ({
 	entry,
@@ -52,7 +62,6 @@ export const webpackConfig = async ({
 	environment,
 	webpackOverride = (f) => f,
 	onProgress,
-	enableCaching = true,
 	maxTimelineTracks,
 	remotionRoot,
 	keyboardShortcutsEnabled,
@@ -65,13 +74,12 @@ export const webpackConfig = async ({
 	environment: 'development' | 'production';
 	webpackOverride: WebpackOverrideFn;
 	onProgress?: (f: number) => void;
-	enableCaching?: boolean;
 	maxTimelineTracks: number | null;
 	keyboardShortcutsEnabled: boolean;
 	bufferStateDelayInMilliseconds: number | null;
 	remotionRoot: string;
 	poll: number | null;
-}): Promise<[string, WebpackConfiguration]> => {
+}): Promise<WebpackConfiguration> => {
 	let lastProgress = 0;
 
 	const isBun = typeof Bun !== 'undefined';
@@ -105,12 +113,6 @@ export const webpackConfig = async ({
 		devtool:
 			environment === 'development' ? 'source-map' : 'cheap-module-source-map',
 		entry: [
-			// Fast Refresh must come first,
-			// because setup-environment imports ReactDOM.
-			// If React DOM is imported before Fast Refresh, Fast Refresh does not work
-			environment === 'development'
-				? require.resolve('./fast-refresh/runtime.js')
-				: null,
 			require.resolve('./setup-environment'),
 			userDefinedComponent,
 			require.resolve('../react-shim.js'),
@@ -120,12 +122,10 @@ export const webpackConfig = async ({
 		plugins:
 			environment === 'development'
 				? [
-						new ReactFreshWebpackPlugin(),
+						new ReactRefreshPlugin(),
 						new CaseSensitivePathsPlugin(),
 						new webpack.HotModuleReplacementPlugin(),
 						define,
-						new AllowOptionalDependenciesPlugin(),
-						new AllowDependencyExpressionPlugin(),
 					]
 				: [
 						new ProgressPlugin((p) => {
@@ -137,8 +137,6 @@ export const webpackConfig = async ({
 							}
 						}),
 						define,
-						new AllowOptionalDependenciesPlugin(),
-						new AllowDependencyExpressionPlugin(),
 					],
 		output: {
 			hashFunction: 'xxhash64',
@@ -177,15 +175,9 @@ export const webpackConfig = async ({
 					test: /\.tsx?$/,
 					use: [
 						{
-							loader: require.resolve('./esbuild-loader/index.js'),
-							options: esbuildLoaderOptions,
+							loader: 'builtin:swc-loader',
+							options: options(environment),
 						},
-						// Keep the order to match babel-loader
-						environment === 'development'
-							? {
-									loader: require.resolve('./fast-refresh/loader.js'),
-								}
-							: null,
 					].filter(truthy),
 				},
 				{
@@ -197,38 +189,34 @@ export const webpackConfig = async ({
 					exclude: /node_modules/,
 					use: [
 						{
-							loader: require.resolve('./esbuild-loader/index.js'),
-							options: esbuildLoaderOptions,
+							loader: 'builtin:swc-loader',
+							options: options(environment),
 						},
-						environment === 'development'
-							? {
-									loader: require.resolve('./fast-refresh/loader.js'),
-								}
-							: null,
 					].filter(truthy),
 				},
 			],
 		},
+		ignoreWarnings: [
+			...OPTIONAL_DEPENDENCIES.map(
+				(dep) => new RegExp(`Can't resolve '${dep}'`),
+			),
+			...SOURCE_MAP_IGNORE.map((dep) => {
+				return (warning: Error) =>
+					warning.message.includes(`Can't resolve '${dep}'`) &&
+					warning.message.includes('source-map');
+			}),
+			// If importing TypeScript, it will give this warning:
+			// WARNING in ./node_modules/typescript/lib/typescript.js 6304:33-52
+			// Critical dependency: the request of a dependency is an expression
+			/the request of a dependency is an expression/,
+		],
 	});
-	const hash = createHash('md5')
-		.update(jsonStringifyWithCircularReferences(conf))
-		.digest('hex');
-	return [
-		hash,
-		{
-			...conf,
-			cache: enableCaching
-				? {
-						type: 'filesystem',
-						name: getWebpackCacheName(environment, hash),
-						version: hash,
-					}
-				: false,
-			output: {
-				...conf.output,
-				...(outDir ? {path: outDir} : {}),
-			},
-			context: remotionRoot,
+	return {
+		...conf,
+		output: {
+			...conf.output,
+			...(outDir ? {path: outDir} : {}),
 		},
-	];
+		context: remotionRoot,
+	};
 };

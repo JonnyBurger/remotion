@@ -31,7 +31,8 @@
 	},
 	"devDependencies": {
 		"@remotion/compositor-linux-x64-gnu": "workspace:*",
-		"@types/minimist": "1.2.2"
+		"@types/minimist": "1.2.2",
+		"esbuild": "0.18.6"
 	},
 	"exports": {
 		"./package.json": "./package.json",

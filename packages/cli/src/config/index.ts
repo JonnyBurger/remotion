@@ -27,7 +27,6 @@ import {
 } from './preview-server';
 import {getProResProfile} from './prores-profile';
 import {getStillFrame, setStillFrame} from './still-frame';
-import {getWebpackCaching} from './webpack-caching';
 
 import type {WebpackConfiguration} from '@remotion/bundler';
 import type {
@@ -78,7 +77,6 @@ import {setPixelFormat} from './pixel-format';
 import {setPort, setRendererPort, setStudioPort} from './preview-server';
 import {setProResProfile} from './prores-profile';
 import {getChromiumUserAgent, setChromiumUserAgent} from './user-agent';
-import {setWebpackCaching} from './webpack-caching';
 import {
 	getWebpackPolling,
 	setWebpackPollingInMilliseconds,
@@ -129,11 +127,6 @@ declare global {
 		 */
 		readonly setEntryPoint: (src: string) => void;
 
-		/**
-		 * Whether Webpack bundles should be cached to make
-		 * subsequent renders faster. Default: true
-		 */
-		readonly setCachingEnabled: (flag: boolean) => void;
 		/**
 		 * @deprecated
 		 * Use `setStudioPort()` and `setRendererPort()` instead.
@@ -569,7 +562,6 @@ export const Config: FlatConfig = {
 	setShouldOpenBrowser,
 	setBufferStateDelayInMilliseconds,
 	overrideWebpackConfig,
-	setCachingEnabled: setWebpackCaching,
 	setPort,
 	setStudioPort,
 	setRendererPort,
@@ -658,7 +650,6 @@ export const ConfigInternals = {
 	getUserPreferredStillImageFormat,
 	getUserPreferredVideoImageFormat,
 	getWebpackOverrideFn,
-	getWebpackCaching,
 	getOutputLocation,
 	setFrameRangeFromCli,
 	setStillFrame,

@@ -33,7 +33,6 @@ type OptionalParameters = {
 		onDiffingProgress?: (bytes: number, done: boolean) => void;
 		webpackOverride?: WebpackOverrideFn;
 		ignoreRegisterRootWarning?: boolean;
-		enableCaching?: boolean;
 		publicDir?: string | null;
 		rootDir?: string;
 		bypassBucketNameValidation?: boolean;
@@ -105,7 +104,6 @@ const mandatoryDeploySite = async ({
 		bundleSite({
 			publicPath: `/${subFolder}/`,
 			webpackOverride: options?.webpackOverride ?? ((f) => f),
-			enableCaching: options?.enableCaching ?? true,
 			publicDir: options?.publicDir ?? null,
 			rootDir: options?.rootDir ?? null,
 			ignoreRegisterRootWarning: options?.ignoreRegisterRootWarning ?? false,

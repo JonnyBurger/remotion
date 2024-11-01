@@ -1,5 +1,5 @@
-import {BundlerInternals} from '@remotion/bundler';
 import {dir} from '@remotion/compositor-linux-arm64-gnu';
+import esbuild from 'esbuild';
 import fs, {cpSync, readdirSync} from 'node:fs';
 import path from 'node:path';
 import {FUNCTION_ZIP_ARM64} from './src/shared/function-zip-path';
@@ -18,7 +18,7 @@ const template = require.resolve(
 	path.join(__dirname, 'src', 'functions', 'index'),
 );
 
-await BundlerInternals.esbuild.build({
+await esbuild.build({
 	platform: 'node',
 	target: 'node16',
 	bundle: true,

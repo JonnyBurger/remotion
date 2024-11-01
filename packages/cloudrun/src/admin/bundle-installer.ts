@@ -1,5 +1,5 @@
-import {BundlerInternals} from '@remotion/bundler';
 import {execSync} from 'child_process';
+import esbuild from 'esbuild';
 import {copyFileSync, mkdirSync, rmSync} from 'fs';
 import path from 'path';
 
@@ -17,7 +17,7 @@ export const bundleInstaller = async () => {
 	mkdirSync(outdir, {recursive: true});
 
 	const bundlemjs = path.join(outdir, 'install.mjs');
-	await BundlerInternals.esbuild.build({
+	await esbuild.build({
 		platform: 'node',
 		target: 'node18',
 		bundle: true,

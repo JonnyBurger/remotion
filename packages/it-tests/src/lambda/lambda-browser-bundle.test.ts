@@ -1,12 +1,12 @@
-import {BundlerInternals} from '@remotion/bundler';
 import {describe, expect, test} from 'bun:test';
+import esbuild from 'esbuild';
 import fs from 'fs';
 import {tmpdir} from 'os';
 import path from 'path';
 
 test('Should not be able to bundle @remotion/lambda directly', async () => {
 	expect(() =>
-		BundlerInternals.esbuild.build({
+		esbuild.build({
 			platform: 'node',
 			target: 'node16',
 			bundle: true,
@@ -20,7 +20,7 @@ describe('Should be able to bundle @remotion/lambda/client with ESBuild', () => 
 	const outfile = path.join(tmpdir(), 'esbuild-test.js');
 
 	test('Should build without errors', async () => {
-		const {errors, warnings} = await BundlerInternals.esbuild.build({
+		const {errors, warnings} = await esbuild.build({
 			platform: 'node',
 			target: 'node16',
 			bundle: true,
@@ -55,7 +55,7 @@ describe('Should be able to bundle @remotion/renderer/pure without React', () =>
 	const outfile = path.join(tmpdir(), 'esbuild-test.js');
 
 	test('Should build without errors', async () => {
-		const {errors, warnings} = await BundlerInternals.esbuild.build({
+		const {errors, warnings} = await esbuild.build({
 			platform: 'node',
 			target: 'node16',
 			bundle: true,

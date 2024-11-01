@@ -39,7 +39,7 @@ export function setupHooks(context: DevMiddlewareContext, logLevel: LogLevel) {
 				.filter(NoReactInternals.truthy)
 				.map((a) => {
 					if (a.startsWith('webpack compiled')) {
-						return `Built in ${stats.endTime - stats.startTime}ms`;
+						return `Built in ${(stats.endTime as number) - (stats.startTime as number)}ms`;
 					}
 
 					return a;

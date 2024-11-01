@@ -168,7 +168,6 @@ export const sitesCreateSubcommand = async (
 				};
 				updateProgress(false);
 			},
-			enableCaching: ConfigInternals.getWebpackCaching(),
 			webpackOverride: ConfigInternals.getWebpackOverrideFn() ?? ((f) => f),
 			gitSource,
 			bypassBucketNameValidation: true,
