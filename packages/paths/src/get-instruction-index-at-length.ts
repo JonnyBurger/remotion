@@ -15,7 +15,9 @@ export const getInstructionIndexAtLengthFromConstructed = (
 	}
 
 	if (fractionLength > constructed.totalLength) {
-		fractionLength = constructed.totalLength;
+		throw new Error(
+			`Length greater than total length was passed. Length: ${fractionLength}, total length: ${constructed.totalLength}`,
+		);
 	}
 
 	let index = constructed.partialLengths.length - 1;

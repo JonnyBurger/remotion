@@ -44,7 +44,7 @@ importers:
         version: 7.24.0
       openai:
         specifier: 4.67.1
-        version: 4.67.1(zod@3.22.3)
+        version: 4.67.1(zod@3.23.8)
       recast:
         specifier: 0.23.9
         version: 0.23.9
@@ -285,8 +285,8 @@ importers:
         specifier: 19.0.0
         version: 19.0.0(react@19.0.0)
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
 
   packages/cli-autocomplete:
     devDependencies:
@@ -339,8 +339,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/compositor-linux-x64-gnu':
         specifier: workspace:*
@@ -507,8 +507,8 @@ importers:
         specifier: 5.96.1
         version: 5.96.1
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
 
   packages/create-video:
     dependencies:
@@ -771,8 +771,8 @@ importers:
         specifier: ^8.3.2
         version: 8.3.2
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@tsconfig/docusaurus':
         specifier: ^1.0.5
@@ -794,7 +794,7 @@ importers:
         version: 4.7.0
       openai:
         specifier: 4.67.1
-        version: 4.67.1(zod@3.22.3)
+        version: 4.67.1(zod@3.23.8)
       url-loader:
         specifier: ^4.1.1
         version: 4.1.1(file-loader@6.2.0)(webpack@5.96.1)
@@ -1142,8 +1142,8 @@ importers:
         specifier: ^1.0.4
         version: 1.0.4(react@19.0.0)
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@types/dom-webcodecs':
         specifier: 0.1.11
@@ -1399,8 +1399,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/compositor-linux-arm64-gnu':
         specifier: workspace:*
@@ -1589,7 +1589,7 @@ importers:
         version: 9.14.0
       openai:
         specifier: 4.67.1
-        version: 4.67.1(zod@3.22.3)
+        version: 4.67.1(zod@3.23.8)
 
   packages/paths:
     devDependencies:
@@ -1631,8 +1631,8 @@ importers:
         specifier: 5.96.1
         version: 5.96.1
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
 
   packages/player-example:
     dependencies:
@@ -2015,8 +2015,8 @@ importers:
         specifier: 19.0.0
         version: 19.0.0(react@19.0.0)
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
 
   packages/studio-server:
     dependencies:
@@ -2191,8 +2191,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config-flat':
         specifier: workspace:*
@@ -2283,8 +2283,8 @@ importers:
         specifier: 0.2.9
         version: 0.2.9(typescript@5.5.4)
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config-flat':
         specifier: workspace:*
@@ -2323,8 +2323,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config-flat':
         specifier: workspace:*
@@ -2360,8 +2360,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config-flat':
         specifier: workspace:*
@@ -2409,8 +2409,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config':
         specifier: workspace:*
@@ -2491,8 +2491,8 @@ importers:
         specifier: 2.5.2
         version: 2.5.2
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config':
         specifier: workspace:*
@@ -2573,8 +2573,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config':
         specifier: workspace:*
@@ -2747,8 +2747,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config-flat':
         specifier: workspace:*
@@ -2793,8 +2793,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config-flat':
         specifier: workspace:*
@@ -2866,8 +2866,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config-flat':
         specifier: workspace:*
@@ -2914,9 +2914,6 @@ importers:
       three:
         specifier: 0.171.0
         version: 0.171.0
-      zod:
-        specifier: 3.22.3
-        version: 3.22.3
     devDependencies:
       '@remotion/eslint-config-flat':
         specifier: workspace:*
@@ -2939,6 +2936,9 @@ importers:
       typescript:
         specifier: 5.5.4
         version: 5.5.4
+      zod:
+        specifier: 3.23.8
+        version: 3.23.8
 
   packages/template-tiktok:
     dependencies:
@@ -2967,8 +2967,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/captions':
         specifier: workspace:*
@@ -3050,8 +3050,8 @@ importers:
         specifier: 5.5.4
         version: 5.5.4
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
 
   packages/template-tts-google:
     dependencies:
@@ -3104,8 +3104,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@remotion/eslint-config-flat':
         specifier: workspace:*
@@ -3250,8 +3250,8 @@ importers:
         specifier: 9.14.0
         version: 9.14.0
       zod:
-        specifier: 3.22.3
-        version: 3.22.3
+        specifier: 3.23.8
+        version: 3.23.8
 
 packages:
 
@@ -25354,7 +25354,7 @@ packages:
       is-wsl: 2.2.0
     dev: false
 
-  /openai@4.67.1(zod@3.22.3):
+  /openai@4.67.1(zod@3.23.8):
     resolution: {integrity: sha512-2YbRFy6qaYRJabK2zLMn4txrB2xBy0KP5g/eoqeSPTT31mIJMnkT75toagvfE555IKa2RdrzJrZwdDsUipsAMw==}
     hasBin: true
     peerDependencies:
@@ -25370,7 +25370,7 @@ packages:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.6.9
-      zod: 3.22.3
+      zod: 3.23.8
     transitivePeerDependencies:
       - encoding
 
@@ -31978,10 +31978,10 @@ packages:
 
   /zod@3.22.3:
     resolution: {integrity: sha512-EjIevzuJRiRPbVH4mGc8nApb/lVLKVpmUhAaR5R5doKGfAnGJ6Gr3CViAVjP+4FWSxCsybeWQdcgCtbX+7oZug==}
+    dev: false
 
   /zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
-    dev: false
 
   /zone.js@0.15.0:
     resolution: {integrity: sha512-9oxn0IIjbCZkJ67L+LkhYWRyAy7axphb3VgE2MBDlOqnmHMPWGYMxJxBYFueFq/JGY2GMwS0rU+UCLunEmy5UA==}

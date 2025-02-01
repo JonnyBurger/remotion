@@ -1,1 +1,1 @@
-export const ENABLE_V5_BREAKING_CHANGES = false as const;
+export const ENABLE_V5_BREAKING_CHANGES = true as const;

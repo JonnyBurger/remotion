@@ -82,7 +82,6 @@ export type CommandLineOptions = {
 	help: boolean;
 	port: number;
 	frame: string | number;
-	['disable-headless']: boolean;
 	['disable-keyboard-shortcuts']: boolean;
 	muted: boolean;
 	height: number;

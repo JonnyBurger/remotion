@@ -24,10 +24,10 @@
 		"remotion": "workspace:*"
 	},
 	"peerDependencies": {
-		"zod": "3.22.3"
+		"zod": "3.23.8"
 	},
 	"devDependencies": {
-		"zod": "3.22.3",
+		"zod": "3.23.8",
 		"@remotion/eslint-config-internal": "workspace:*",
 		"eslint": "9.14.0"
 	},

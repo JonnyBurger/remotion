@@ -519,15 +519,9 @@ test('Dynamic duration should work and audio separation', async () => {
 	expect(data).toContain('Video: h264');
 	const expectedDuration = (randomDuration / 30).toFixed(2);
 	expect(data).toContain(`Duration: 00:00:0${expectedDuration}`);
-	if (NoReactInternals.ENABLE_V5_BREAKING_CHANGES) {
-		expect(data).toContain(
-			`Stream #0:0[0x1](und): Video: h264 (avc1 / 0x31637661), yuv420p(tv, bt709, progressive)`,
-		);
-	} else {
-		expect(data).toContain(
-			`Stream #0:0[0x1](und): Video: h264 (avc1 / 0x31637661), yuvj420p(pc, bt470bg/unknown/unknown, progressive)`,
-		);
-	}
+	expect(data).toContain(
+		`Stream #0:0[0x1](und): Video: h264 (avc1 / 0x31637661), yuv420p(pc, bt470bg/unknown/unknown, progressive)`,
+	);
 
 	fs.unlinkSync(outputPath);
 

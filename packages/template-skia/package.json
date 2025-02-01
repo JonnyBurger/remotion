@@ -19,7 +19,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "remotion": "workspace:*",
-    "zod": "3.22.3"
+    "zod": "3.23.8"
   },
   "devDependencies": {
     "@remotion/eslint-config-flat": "workspace:*",

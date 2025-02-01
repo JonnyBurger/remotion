@@ -21,7 +21,6 @@ export const BooleanFlags = [
 	'y',
 	'disable-web-security',
 	'ignore-certificate-errors',
-	'disable-headless',
 	'disable-keyboard-shortcuts',
 	'default-only',
 	'no-open',

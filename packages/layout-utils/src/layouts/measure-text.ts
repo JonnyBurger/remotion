@@ -122,7 +122,7 @@ export const measureText = ({
 	fontWeight,
 	letterSpacing,
 	fontVariantNumeric,
-	validateFontIsLoaded,
+	validateFontIsLoaded = true,
 	additionalStyles,
 }: Word): Dimensions => {
 	const key = `${text}-${fontFamily}-${fontWeight}-${fontSize}-${letterSpacing}-${JSON.stringify(additionalStyles)}`;

@@ -107,7 +107,6 @@ const {
 	folderExpiryOption,
 	enableMultiprocessOnLinuxOption,
 	glOption,
-	headlessOption,
 	numberOfGifLoopsOption,
 	beepOnFinishOption,
 	encodingMaxRateOption,
@@ -238,11 +237,6 @@ declare global {
 		 * Default: false
 		 */
 		readonly setChromiumIgnoreCertificateErrors: (should: boolean) => void;
-		/**
-		 * If false, will open an actual browser during rendering to observe progress.
-		 * Default: true
-		 */
-		readonly setChromiumHeadlessMode: (should: boolean) => void;
 		/**
 		 * Set the OpenGL rendering backend for Chrome. Possible values: 'egl', 'angle', 'swiftshader', 'swangle', 'vulkan' and 'angle-egl'.
 		 * Default: 'swangle' in Lambda, null elsewhere.
@@ -599,7 +593,6 @@ export const Config: FlatConfig = {
 		delayRenderTimeoutInMillisecondsOption.setConfig,
 	setChromiumDisableWebSecurity,
 	setChromiumIgnoreCertificateErrors,
-	setChromiumHeadlessMode: headlessOption.setConfig,
 	setChromiumOpenGlRenderer: glOption.setConfig,
 	setChromiumUserAgent,
 	setDotEnvLocation,

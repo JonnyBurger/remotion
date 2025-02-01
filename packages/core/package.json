@@ -33,9 +33,9 @@
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"webpack": "5.96.1",
-		"zod": "3.22.3",
 		"@remotion/eslint-config-internal": "workspace:*",
-		"eslint": "9.14.0"
+		"eslint": "9.14.0",
+		"zod": "3.23.8"
 	},
 	"keywords": [
 		"remotion",

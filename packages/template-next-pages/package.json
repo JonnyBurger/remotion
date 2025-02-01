@@ -23,7 +23,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "remotion": "workspace:*",
-    "zod": "3.22.3"
+    "zod": "3.23.8"
   },
   "devDependencies": {
     "dotenv": "16.0.3",

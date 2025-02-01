@@ -31,7 +31,7 @@
     "react-dom": "19.0.0",
     "remotion": "workspace:*",
     "tailwind-merge": "2.5.2",
-    "zod": "3.22.3"
+    "zod": "3.23.8"
   },
   "devDependencies": {
     "@remotion/eslint-config": "workspace:*",

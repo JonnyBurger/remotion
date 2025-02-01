@@ -20,7 +20,7 @@ jobs:
           version: "8.10.2"
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 18
           cache: "pnpm"
       - uses: oven-sh/setup-bun@v1
         with:
@@ -61,7 +61,7 @@ jobs:
             ${{ runner.os }}-turbo-
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 18
           cache: "pnpm"
       - uses: oven-sh/setup-bun@v1
         with:
@@ -127,15 +127,15 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            node_version: 16
+            node_version: 18
           - os: windows-latest
-            node_version: 16
+            node_version: 18
           - os: macos-latest
-            node_version: 16
+            node_version: 18
           - os: macos-14
-            node_version: 16
+            node_version: 18
           - os: ubuntu-latest
-            node_version: 20.5
+            node_version: 22
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5

@@ -3,23 +3,23 @@ image: /generated/articles-docs-schemas.png
 id: schemas
 title: Defining a schema for your props
 sidebar_label: Defining a schema
-crumb: "How To"
+crumb: 'How To'
 ---
 
 As an alternative to [using TypeScript types](/docs/parameterized-rendering) to define the shape of the props your component accepts, you may use [Zod](https://zod.dev/) to define a schema for your props. You may do so if you want to edit the props visually in the Remotion Studio.
 
 ## Prerequisites
 
-If you want to use this feature, install `zod@3.22.3` and [`@remotion/zod-types`](/docs/zod-types/) for Remotion-specific types:
+If you want to use this feature, install `zod@3.23.8` and [`@remotion/zod-types`](/docs/zod-types/) for Remotion-specific types:
 
-<Installation pkg="@remotion/zod-types zod@3.22.3"/>
+<Installation pkg="@remotion/zod-types zod@3.23.8" />
 
 ## Defining a schema
 
 To define a schema for your props, use [`z.object()`](https://zod.dev/?id=objects):
 
 ```tsx twoslash
-import { z } from "zod";
+import {z} from 'zod';
 
 export const myCompSchema = z.object({
   propOne: z.string(),
@@ -30,17 +30,14 @@ export const myCompSchema = z.object({
 Using `z.infer()`, you can turn the schema into a type:
 
 ```tsx twoslash
-import { z } from "zod";
+import {z} from 'zod';
 
 export const myCompSchema = z.object({
   propOne: z.string(),
   propTwo: z.string(),
 });
 // ---cut---
-export const MyComp: React.FC<z.infer<typeof myCompSchema>> = ({
-  propOne,
-  propTwo,
-}) => {
+export const MyComp: React.FC<z.infer<typeof myCompSchema>> = ({propOne, propTwo}) => {
   return (
     <div>
       props: {propOne}, {propTwo}
@@ -55,18 +52,15 @@ Use the [`schema`](/docs/composition#schema) prop to attach the schema to your [
 
 ```tsx twoslash title="src/Root.tsx" {3,14-18}
 // @filename: MyComponent.tsx
-import React from "react";
-import { z } from "zod";
+import React from 'react';
+import {z} from 'zod';
 
 export const myCompSchema = z.object({
   propOne: z.string(),
   propTwo: z.string(),
 });
 
-export const MyComponent: React.FC<z.infer<typeof myCompSchema>> = ({
-  propOne,
-  propTwo,
-}) => {
+export const MyComponent: React.FC<z.infer<typeof myCompSchema>> = ({propOne, propTwo}) => {
   return (
     <div>
       <h1>{propOne}</h1>
@@ -78,9 +72,9 @@ export const MyComponent: React.FC<z.infer<typeof myCompSchema>> = ({
 // @filename: Root.tsx
 // organize-imports-ignore
 // ---cut---
-import React from "react";
-import { Composition } from "remotion";
-import { MyComponent, myCompSchema } from "./MyComponent";
+import React from 'react';
+import {Composition} from 'remotion';
+import {MyComponent, myCompSchema} from './MyComponent';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -93,8 +87,8 @@ export const RemotionRoot: React.FC = () => {
       height={1080}
       schema={myCompSchema}
       defaultProps={{
-        propOne: "Hello World",
-        propTwo: "Welcome to Remotion",
+        propOne: 'Hello World',
+        propTwo: 'Welcome to Remotion',
       }}
     />
   );

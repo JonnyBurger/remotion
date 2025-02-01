@@ -36,7 +36,7 @@
 		"@smithy/abort-controller": "3.1.1",
 		"mime-types": "2.1.34",
 		"remotion": "workspace:*",
-		"zod": "3.22.3"
+		"zod": "3.23.8"
 	},
 	"devDependencies": {
 		"@remotion/bundler": "workspace:*",

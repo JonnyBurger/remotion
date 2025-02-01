@@ -27,7 +27,7 @@
 		"@remotion/renderer": "workspace:*",
 		"google-auth-library": "^8.7.0",
 		"remotion": "workspace:*",
-		"zod": "3.22.3"
+		"zod": "3.23.8"
 	},
 	"devDependencies": {
 		"@remotion/compositor-linux-x64-gnu": "workspace:*",

@@ -19,8 +19,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "remotion": "workspace:*",
-    "three": "0.171.0",
-    "zod": "3.22.3"
+    "three": "0.171.0"
   },
   "devDependencies": {
     "@remotion/eslint-config-flat": "workspace:*",
@@ -29,7 +28,8 @@
     "@types/web": "0.0.166",
     "eslint": "9.14.0",
     "prettier": "3.3.3",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "zod": "3.23.8"
   },
   "private": true
 }

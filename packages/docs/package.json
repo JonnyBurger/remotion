@@ -91,7 +91,7 @@
 		"remotion": "workspace:*",
 		"three": "0.158.0",
 		"uuid": "^8.3.2",
-		"zod": "3.22.3",
+		"zod": "3.23.8",
 		"@remotion/eslint-config-internal": "workspace:*",
 		"eslint": "9.14.0"
 	},

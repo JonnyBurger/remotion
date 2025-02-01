@@ -57,10 +57,6 @@ const envOption: Fig.Option = {
 
 const chromeOptions: Fig.Option[] = [
 	{
-		name: "--disable-headless",
-		description: "Run Chrome in normal mode rather than headless",
-	},
-	{
 		name: "--gl",
 		description: "Which OpenGL renderer to use",
 		args: {

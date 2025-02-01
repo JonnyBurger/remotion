@@ -17,7 +17,6 @@ import {folderExpiryOption} from './folder-expiry';
 import {forSeamlessAacConcatenationOption} from './for-seamless-aac-concatenation';
 import {glOption} from './gl';
 import {hardwareAccelerationOption} from './hardware-acceleration';
-import {headlessOption} from './headless';
 import {jpegQualityOption} from './jpeg-quality';
 import {logLevelOption} from './log-level';
 import {metadataOption} from './metadata';
@@ -67,7 +66,6 @@ export const allOptions = {
 	x264Option,
 	logLevelOption,
 	delayRenderTimeoutInMillisecondsOption,
-	headlessOption,
 	overwriteOption,
 	binariesDirectoryOption,
 	forSeamlessAacConcatenationOption,

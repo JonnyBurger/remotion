@@ -35,7 +35,7 @@
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"@types/semver": "^7.3.4",
-		"zod": "3.22.3",
+		"zod": "3.23.8",
 		"@remotion/zod-types": "workspace:*",
 		"@remotion/eslint-config-internal": "workspace:*",
 		"eslint": "9.14.0"

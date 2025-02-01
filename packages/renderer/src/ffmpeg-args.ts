@@ -112,7 +112,8 @@ export const generateFfmpegArgs = ({
 		`Encoder: ${encoderName}, hardware accelerated: ${hardwareAccelerated}`,
 	);
 
-	const resolvedColorSpace = colorSpace ?? DEFAULT_COLOR_SPACE;
+	const resolvedColorSpace: ColorSpace =
+		codec === 'gif' ? 'bt601' : (colorSpace ?? DEFAULT_COLOR_SPACE);
 
 	const colorSpaceOptions: string[][] =
 		resolvedColorSpace === 'bt709'

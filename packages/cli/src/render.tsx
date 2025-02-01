@@ -28,7 +28,6 @@ const {
 	encodingBufferSizeOption,
 	reproOption,
 	delayRenderTimeoutInMillisecondsOption,
-	headlessOption,
 	overwriteOption,
 	binariesDirectoryOption,
 	forSeamlessAacConcatenationOption,
@@ -142,9 +141,6 @@ export const render = async (
 	const puppeteerTimeout = delayRenderTimeoutInMillisecondsOption.getValue({
 		commandLine: parsedCli,
 	}).value;
-	const headless = headlessOption.getValue({
-		commandLine: parsedCli,
-	}).value;
 	const overwrite = overwriteOption.getValue(
 		{
 			commandLine: parsedCli,
@@ -171,7 +167,6 @@ export const render = async (
 		disableWebSecurity,
 		enableMultiProcessOnLinux,
 		gl,
-		headless,
 		ignoreCertificateErrors,
 		userAgent,
 	};

@@ -72,7 +72,7 @@ test('Basic series test', () => {
 		</WrapSequenceContext>,
 	);
 	expect(outerHTML).toBe(
-		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>third 0</div></div>',
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>third 0</div></div></div>',
 	);
 });
 
@@ -102,7 +102,7 @@ test('Should support fragments', () => {
 	);
 
 	expect(outerHtml).not.toBe(
-		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>second 1</div></div>',
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>second 1</div></div></div>',
 	);
 });
 test('Should not allow foreign elements', () => {
@@ -129,7 +129,7 @@ test('Should allow layout prop', () => {
 		</WrapSequenceContext>,
 	);
 	expect(outerHTML).toBe(
-		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>first 0</div></div>',
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>first 0</div></div></div>',
 	);
 
 	const outerHTML2 = renderForFrame(
@@ -142,7 +142,9 @@ test('Should allow layout prop', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML2).toBe('<div>first 0</div>');
+	expect(outerHTML2).toBe(
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>first 0</div></div>',
+	);
 });
 test('Should render nothing after the end', () => {
 	const outerHTML = renderForFrame(
@@ -155,7 +157,9 @@ test('Should render nothing after the end', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe('');
+	expect(outerHTML).toBe(
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"></div>',
+	);
 });
 test('Should throw if invalid or no duration provided', () => {
 	expect(() => {
@@ -201,7 +205,7 @@ test('Should allow whitespace', () => {
 	);
 
 	expect(outerHtml).toBe(
-		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>second 1</div></div>',
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>second 1</div></div></div>',
 	);
 });
 test('Handle empty Series.Sequence', () => {
@@ -234,7 +238,9 @@ test('Should allow negative overlap prop', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe('<div>first 4</div><div>second 0</div>');
+	expect(outerHTML).toBe(
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>first 4</div><div>second 0</div></div>',
+	);
 });
 
 test('Should allow positive overlap prop', () => {
@@ -251,7 +257,9 @@ test('Should allow positive overlap prop', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe('');
+	expect(outerHTML).toBe(
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"></div>',
+	);
 });
 
 test('Should disallow NaN as offset prop', () => {
@@ -316,7 +324,9 @@ test('Should cascade negative offset props', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe('<div>third 0</div>');
+	expect(outerHTML).toBe(
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>third 0</div></div>',
+	);
 });
 
 test('Should cascade positive offset props', () => {
@@ -336,7 +346,9 @@ test('Should cascade positive offset props', () => {
 			</Series>
 		</WrapSequenceContext>,
 	);
-	expect(outerHTML).toBe('<div>third 0</div>');
+	expect(outerHTML).toBe(
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>third 0</div></div>',
+	);
 });
 
 test('Allow durationInFrames as Infinity for last Series.Sequence', () => {
@@ -357,7 +369,7 @@ test('Allow durationInFrames as Infinity for last Series.Sequence', () => {
 		</WrapSequenceContext>,
 	);
 	expect(outerHTML).toBe(
-		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>third 0</div></div>',
+		'<div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div style="position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:flex"><div>third 0</div></div></div>',
 	);
 });
 

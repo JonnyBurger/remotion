@@ -41,8 +41,6 @@ export const RenderModalAdvanced: React.FC<{
 	readonly setIgnoreCertificateErrors: React.Dispatch<
 		React.SetStateAction<boolean>
 	>;
-	readonly setHeadless: React.Dispatch<React.SetStateAction<boolean>>;
-	readonly headless: boolean;
 	readonly ignoreCertificateErrors: boolean;
 	readonly disableWebSecurity: boolean;
 	readonly openGlOption: UiOpenGlOptions;
@@ -90,8 +88,6 @@ export const RenderModalAdvanced: React.FC<{
 	setDisallowParallelEncoding,
 	setDisableWebSecurity,
 	setIgnoreCertificateErrors,
-	setHeadless,
-	headless,
 	ignoreCertificateErrors,
 	disableWebSecurity,
 	openGlOption,
@@ -174,13 +170,6 @@ export const RenderModalAdvanced: React.FC<{
 			setIgnoreCertificateErrors(e.target.checked);
 		},
 		[setIgnoreCertificateErrors],
-	);
-
-	const onHeadless = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			setHeadless(e.target.checked);
-		},
-		[setHeadless],
 	);
 
 	const onUserAgentChanged: React.ChangeEventHandler<HTMLInputElement> =
@@ -405,16 +394,6 @@ export const RenderModalAdvanced: React.FC<{
 						onChange={onIgnoreCertificatErrors}
 						name="ignore-certificate-errors"
 					/>
-				</div>
-			</div>
-			<div style={optionRow}>
-				<div style={label}>
-					Headless mode
-					<Spacing x={0.5} />
-					<OptionExplainerBubble id="headlessOption" />
-				</div>
-				<div style={rightRow}>
-					<Checkbox checked={headless} onChange={onHeadless} name="headless" />
 				</div>
 			</div>
 			<div style={optionRow}>

@@ -85,7 +85,7 @@
 		"three": "0.171.0",
 		"ts-unused-exports": "^7.0.1",
 		"use-asset": "^1.0.4",
-		"zod": "3.22.3",
+		"zod": "3.23.8",
 		"style-loader": "2.0.0",
 		"css-loader": "5.2.7",
 		"sass-loader": "14.2.1",
