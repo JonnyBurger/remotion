@@ -1,0 +1,40 @@
+{
+	"repository": {
+		"url": "https://github.com/remotion-dev/remotion/tree/main/packages/transformers-js"
+	},
+	"name": "@remotion/transformers-js",
+	"version": "4.0.202",
+	"description": "Generate Captions for Remotion Videos using Whisper via transformers.js",
+	"main": "dist/index.js",
+	"sideEffects": false,
+	"bugs": {
+		"url": "https://github.com/remotion-dev/remotion/issues"
+	},
+	"scripts": {
+		"formatting": "prettier src --check",
+		"lint": "eslint src --ext ts,tsx",
+		"test": "bun test src"
+	},
+	"files": [
+		"dist"
+	],
+	"author": "David Rechkemmer",
+	"license": "SEE LICENSE IN LICENSE.md",
+	"dependencies": {
+		"@xenova/transformers": "^2.17.2"
+	},
+	"peerDependencies": {
+		"react": ">=16.8.0",
+		"react-dom": ">=16.8.0"
+	},
+	"keywords": [
+		"remotion",
+		"openai",
+		"whisper",
+		"transformers.js"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"homepage": "https://www.remotion.dev/docs/transformers-js"
+}
