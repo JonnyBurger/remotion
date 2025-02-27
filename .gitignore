@@ -22,6 +22,7 @@ packages/cloudrun/src/gcpInstaller/terraform*
 packages/cloudrun/src/gcpInstaller/*.tfplan
 packages/lambda-python/*/__pycache__
 packages/lambda-python/remotion-env-lint
+packages/effects/node_modules/
 packages/lambda-python/build
 packages/lambda-python/remotion-env
 packages/lambda-python/remotion_lambda.egg-info
