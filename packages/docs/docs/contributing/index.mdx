@@ -19,25 +19,12 @@ This project is released with a [Contributor Code of Conduct](https://remotion.d
 ## Setup
 
 <Step>1</Step> Remotion uses <a href="https://pnpm.io/">
-  <code>pnpm</code> v8.10.2
-</a> as the package manager for development in this repository. We recommend
-using Corepack so you get the same version of pnpm as we have. <br />
+  <code>bun</code> v1.2.0
+</a> as the package manager for development in this repository. <br />
 
 ```sh
-corepack enable
+curl -fsSL https://bun.sh/install | bash -s "bun-v1.2.0"
 ```
-
-If you don't have `corepack`, install `pnpm@8.10.2` manually:
-
-```sh
-npm i -g pnpm@8.10.2
-```
-
-Prefix with `sudo` if necessary.  
-The version must be `8.10.2`.
-
-We use [Bun](https://bun.sh) to speed up some parts of the build.  
-Install at least Bun 1.1.7 on your system - see https://bun.sh/ for instructions.
 
 <Step>2</Step> Clone the Remotion repository:
 

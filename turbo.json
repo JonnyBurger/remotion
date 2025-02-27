@@ -1,7 +1,6 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"ui": "stream",
-	"globalEnv": ["ENABLE_EXPERIMENTAL_COREPACK"],
 	"tasks": {
 		"formatting": {
 			"dependsOn": [],
@@ -13,6 +12,13 @@
 		},
 		"testlambda": {
 			"dependsOn": ["^make", "@remotion/example#bundle"]
+		},
+		"@remotion/it-tests#testlambda": {
+			"dependsOn": [
+				"^make",
+				"@remotion/lambda#testlambda",
+				"@remotion/example#bundle"
+			]
 		},
 		"make": {
 			"dependsOn": ["^make"],
@@ -81,9 +87,8 @@
 			],
 			"outputLogs": "new-only"
 		},
-		"@remotion/convert#build-page": {
-			"dependsOn": ["^make"],
-			"outputs": ["build", ".vercel"],
+		"@remotion/example#test": {
+			"dependsOn": ["@remotion/example#bundle"],
 			"outputLogs": "new-only"
 		},
 		"@remotion/convert#build-spa": {

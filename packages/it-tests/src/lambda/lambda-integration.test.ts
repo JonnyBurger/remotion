@@ -3,7 +3,7 @@ import execa from 'execa';
 import path from 'path';
 
 test('Should be able to call pnpm exec remotion lambda', async () => {
-	const task = await execa('pnpm', ['exec', 'remotion', 'lambda'], {
+	const task = await execa('bun', ['x', 'remotion', 'lambda'], {
 		cwd: path.join(process.cwd(), '..', 'example'),
 	});
 	expect(task.stdout).toContain('Available commands');
@@ -11,8 +11,8 @@ test('Should be able to call pnpm exec remotion lambda', async () => {
 
 test('Should be able to get user policy without authentication', async () => {
 	const task = await execa(
-		'pnpm',
-		['exec', 'remotion', 'lambda', 'policies', 'user'],
+		'bun',
+		['x', 'remotion', 'lambda', 'policies', 'user'],
 		{
 			cwd: path.join(process.cwd(), '..', 'example'),
 		},
@@ -22,8 +22,8 @@ test('Should be able to get user policy without authentication', async () => {
 
 test('Should be able to get role policy without authentication', async () => {
 	const task = await execa(
-		'pnpm',
-		['exec', 'remotion', 'lambda', 'policies', 'role'],
+		'bun',
+		['x', 'remotion', 'lambda', 'policies', 'role'],
 		{
 			cwd: path.join(process.cwd(), '..', 'example'),
 		},

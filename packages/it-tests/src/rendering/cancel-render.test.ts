@@ -12,7 +12,7 @@ beforeAll(async () => {
 	if (process.env.CI) {
 		return;
 	}
-	await execa('pnpm', ['exec', 'remotion', 'bundle'], {
+	await execa('bun', ['x', 'remotion', 'bundle'], {
 		cwd: path.join(process.cwd(), '..', 'example'),
 	});
 });
@@ -32,9 +32,9 @@ test(
 	'Should fail to render if cancelRender() was being used',
 	async () => {
 		const task = await execa(
-			'pnpm',
+			'bun',
 			[
-				'exec',
+				'x',
 				'remotion',
 				'render',
 				'build',

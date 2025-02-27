@@ -6,7 +6,6 @@ import {
 } from "@remotion/renderer";
 import dotenv from "dotenv";
 import express from "express";
-import rateLimit from "express-rate-limit";
 import fs from "fs";
 import os from "os";
 import path from "path";
@@ -33,13 +32,6 @@ enum Params {
 // This setting will reveal the real IP address of the user, so we can apply rate limiting.
 app.set("trust proxy", 1);
 
-// Not more than 20 requests per minute per user
-app.use(
-  rateLimit({
-    windowMs: 1 * 60 * 1000,
-    max: 20,
-  }),
-);
 
 // The image is rendered when /[CompositionName].[imageformat] is called.
 // Props are passed via query string.

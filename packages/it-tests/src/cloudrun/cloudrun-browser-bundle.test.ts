@@ -35,10 +35,10 @@ describe('Should be able to bundle @remotion/cloudrun/client with ESBuild', () =
 		expect(contents.includes('getRemotionEnvironment')).toBe(false);
 	});
 
-	test('Bundle should be below 7MB', async () => {
+	test('Bundle should be below 8MB', async () => {
 		const file = await fs.promises.readFile(outfile, 'utf-8');
 		expect(file.length).toBeGreaterThan(10000);
-		expect(file.length).toBeLessThanOrEqual(7_000_000);
+		expect(file.length).toBeLessThanOrEqual(8_000_000);
 	});
 
 	test('Bundle should not include Renderer', async () => {

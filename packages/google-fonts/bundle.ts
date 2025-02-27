@@ -34,7 +34,7 @@ for (const file of output.outputs) {
 	const bunPath = path.join('dist', 'esm', file.path);
 	const bunFile = Bun.file(bunPath);
 	if (await bunFile.exists()) {
-		await bunFile.unlink();
+		await bunFile.delete();
 	}
 
 	Bun.write(Bun.file(bunPath), newStr, {});

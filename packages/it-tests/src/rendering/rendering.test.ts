@@ -14,7 +14,7 @@ beforeAll(async () => {
 	if (process.env.CI) {
 		return;
 	}
-	await execa('pnpm', ['exec', 'remotion', 'bundle'], {
+	await execa('bun', ['x', 'remotion', 'bundle'], {
 		cwd: path.join(process.cwd(), '..', 'example'),
 	});
 });
@@ -35,9 +35,9 @@ test(
 	'Should be able to render video with custom port',
 	async () => {
 		const task = execa(
-			'pnpm',
+			'bun',
 			[
-				'exec',
+				'x',
 				'remotion',
 				'render',
 				'build',
@@ -82,9 +82,9 @@ test(
 	'Should fail to render out of range CRF',
 	async () => {
 		const task = await execa(
-			'pnpm',
+			'bun',
 			[
-				'exec',
+				'x',
 				'remotion',
 				'render',
 				'build',
@@ -114,9 +114,9 @@ test('Should fail to render out of range frame when range is a number', async ()
 	const out = outputPath.replace('.mp4', '');
 
 	const task = await execa(
-		'pnpm',
+		'bun',
 		[
-			'exec',
+			'x',
 			'remotion',
 			'render',
 			'build',
@@ -139,9 +139,9 @@ test('Should fail to render out of range frame when range is a number', async ()
 
 test('Should fail to render out of range frame when range is a string', async () => {
 	const task = await execa(
-		'pnpm',
+		'bun',
 		[
-			'exec',
+			'x',
 			'remotion',
 			'render',
 			'build',
@@ -164,9 +164,9 @@ test(
 	async () => {
 		const out = outputPath.replace('.mp4', '.mov');
 		const task = await execa(
-			'pnpm',
+			'bun',
 			[
-				'exec',
+				'x',
 				'remotion',
 				'render',
 				'build',
@@ -207,9 +207,9 @@ test('Should render a still image if single frame specified', async () => {
 	const outDir = outputPath.replace('.mp4', '');
 	const outImg = path.join(outDir, 'element-2.png');
 	const task = await execa(
-		'pnpm',
+		'bun',
 		[
-			'exec',
+			'x',
 			'remotion',
 			'render',
 			'build',
@@ -245,8 +245,8 @@ test(
 	async () => {
 		const out = outputPath.replace('mp4', 'wav');
 		const task = execa(
-			'pnpm',
-			['exec', 'remotion', 'render', 'build', 'audio-testing', out],
+			'bun',
+			['x', 'remotion', 'render', 'build', 'audio-testing', out],
 			{
 				cwd: path.join(process.cwd(), '..', 'example'),
 			},
@@ -283,8 +283,8 @@ test(
 	async () => {
 		const out = outputPath.replace('mp4', 'mp3');
 		const task = execa(
-			'pnpm',
-			['exec', 'remotion', 'render', 'build', 'audio-testing', out],
+			'bun',
+			['x', 'remotion', 'render', 'build', 'audio-testing', out],
 			{
 				cwd: path.join(process.cwd(), '..', 'example'),
 			},
@@ -319,8 +319,8 @@ test(
 	async () => {
 		const out = outputPath.replace('mp4', 'aac');
 		const task = execa(
-			'pnpm',
-			['exec', 'remotion', 'render', 'build', 'audio-testing', out],
+			'bun',
+			['x', 'remotion', 'render', 'build', 'audio-testing', out],
 			{
 				cwd: path.join(process.cwd(), '..', 'example'),
 			},
@@ -356,16 +356,8 @@ test(
 	'Should render a video with GIFs',
 	async () => {
 		const task = await execa(
-			'pnpm',
-			[
-				'exec',
-				'remotion',
-				'render',
-				'build',
-				'gif',
-				'--frames=0-47',
-				outputPath,
-			],
+			'bun',
+			['x', 'remotion', 'render', 'build', 'gif', '--frames=0-47', outputPath],
 			{
 				cwd: path.join(process.cwd(), '..', 'example'),
 			},
@@ -403,8 +395,8 @@ test(
 		const out = outputPath.replace('.mp4', '.mp3');
 
 		const task = await execa(
-			'pnpm',
-			['exec', 'remotion', 'render', 'build', 'offline-audio-buffer', out],
+			'bun',
+			['x', 'remotion', 'render', 'build', 'offline-audio-buffer', out],
 			{
 				cwd: path.join(process.cwd(), '..', 'example'),
 			},
@@ -433,8 +425,8 @@ test(
 test("Should succeed to render an audio file that doesn't have any audio inputs", async () => {
 	const out = outputPath.replace('.mp4', '.mp3');
 	const task = await execa(
-		'pnpm',
-		['exec', 'remotion', 'render', 'build', 'ten-frame-tester', out],
+		'bun',
+		['x', 'remotion', 'render', 'build', 'ten-frame-tester', out],
 		{
 			cwd: path.join(process.cwd(), '..', 'example'),
 		},
@@ -456,27 +448,31 @@ test("Should succeed to render an audio file that doesn't have any audio inputs"
 
 test('Should render a still that uses the staticFile() API and should apply props', async () => {
 	const out = outputPath.replace('.mp4', '.png');
-	await Bun.write('props.json', JSON.stringify({flag: true}));
+	const props = JSON.stringify({flag: true});
+	const cwd = path.join(process.cwd(), '..', 'example');
+	await Bun.write(path.join(cwd, 'props.json'), props);
 	const task = await execa(
-		'pnpm',
+		'bun',
 		[
-			'exec',
+			'x',
 			'remotion',
 			'still',
 			'build',
 			'static-demo',
 			out,
 			'--log=verbose',
-			`--props={\"flag\": true}`,
+			`--props`,
+			'props.json',
 		],
 		{
-			cwd: path.join(process.cwd(), '..', 'example'),
+			cwd,
 			// @ts-expect-error staticfile
 			env: {
 				REMOTION_FLAG: 'hi',
 			},
 		},
 	);
+	await Bun.file(path.join(cwd, 'props.json')).delete();
 	expect(task.exitCode).toBe(0);
 	fs.unlinkSync(out);
 });
@@ -485,16 +481,19 @@ test('Dynamic duration should work and audio separation', async () => {
 	const audio = path.join(process.cwd(), '..', 'example', 'audio.wav');
 
 	const randomDuration = Math.round(Math.random() * 18 + 2);
+	const props = JSON.stringify({duration: randomDuration, offthread: true});
+	const cwd = path.join(process.cwd(), '..', 'example');
+	await Bun.file(path.join(cwd, 'props.json')).write(props);
 	const task = await execa(
-		'pnpm',
+		'bun',
 		[
-			'exec',
+			'x',
 			'remotion',
 			'render',
 			'build',
 			'dynamic-duration',
 			`--props`,
-			`{"duration": ${randomDuration}, "offthread": true}`,
+			'props.json',
 			'--separate-audio-to',
 			'audio.wav',
 			outputPath,
@@ -503,6 +502,7 @@ test('Dynamic duration should work and audio separation', async () => {
 			cwd: path.join(process.cwd(), '..', 'example'),
 		},
 	);
+	await Bun.file(path.join(cwd, 'props.json')).delete();
 
 	expect(task.exitCode).toBe(0);
 	expect(fs.existsSync(outputPath)).toBe(true);
@@ -600,9 +600,9 @@ test(
 
 test('Should be able to render a huge payload that gets serialized', async () => {
 	const task = await execa(
-		'pnpm',
+		'bun',
 		[
-			'exec',
+			'x',
 			'remotion',
 			'still',
 			'build',
@@ -622,9 +622,9 @@ test(
 	'If timeout, the error should be shown',
 	async () => {
 		const task = await execa(
-			'pnpm',
+			'bun',
 			[
-				'exec',
+				'x',
 				'remotion',
 				'render',
 				'build',
@@ -650,8 +650,8 @@ test(
 	'Should be able to call pnpm exec compositions',
 	async () => {
 		const task = await execa(
-			'pnpm',
-			['exec', 'remotion', 'compositions', 'build'],
+			'bun',
+			['x', 'remotion', 'compositions', 'build'],
 			{
 				cwd: path.join(process.cwd(), '..', 'example'),
 				reject: false,
@@ -669,8 +669,8 @@ test(
 	'Should be able to render video that was wrapped in context',
 	async () => {
 		await execa(
-			'pnpm',
-			['exec', 'remotion', 'still', 'build', 'wrapped-in-context', outputPath],
+			'bun',
+			['x', 'remotion', 'still', 'build', 'wrapped-in-context', outputPath],
 			{
 				cwd: path.join(process.cwd(), '..', 'example'),
 			},

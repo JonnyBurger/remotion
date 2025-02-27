@@ -1,9 +1,0 @@
-packages:
-  - 'packages/**'
-  - '!packages/lambda-php-example/vendor/remotion/lambda'
-  - '!packages/player-example/.next'
-  - '!packages/it-tests/whisper.cpp'
-  - '!packages/cloudrun/container'
-  - '!packages/template-tiktok/whisper.cpp'
-  - '!packages/template-tiktok/whisper.cpp/**'
-  - '!packages/bugs'

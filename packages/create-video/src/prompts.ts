@@ -25,7 +25,8 @@ export async function selectAsync(
 	const {value} = await prompt({
 		limit: 11,
 		...questions,
-		// @ts-expect-error: onRender not in the types
+		// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
+		// @ts-ignore
 		onRender(this: {
 			cursor: number;
 			firstRender: boolean;

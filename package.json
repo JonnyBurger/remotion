@@ -10,7 +10,7 @@
 		"build": "turbo run make --no-update-notifier",
 		"build-docs": "turbo run build-docs --no-update-notifier",
 		"testssr": "turbo run testssr --no-update-notifier",
-		"testlambda": "turbo run testlambda --concurrency=1 --no-update-notifier",
+		"testlambda": "turbo run testlambda --concurrency=2 --no-update-notifier",
 		"ci": "turbo run make test --concurrency=1 --no-update-notifier",
 		"watch": "turbo watch make --experimental-write-cache --concurrency=2",
 		"watchwebcodecs": "turbo watch make --experimental-write-cache --filter='@remotion/media-parser' --filter='@remotion/webcodecs'",
@@ -38,8 +38,13 @@
 		"prettier-plugin-organize-imports": "3.2.4"
 	},
 	"dependencies": {
-		"turbo": "2.4.0",
+		"turbo": "2.4.3-canary.3",
 		"typescript": "5.5.4"
 	},
-	"packageManager": "pnpm@8.10.2"
+	"packageManager": "bun@1.2.2",
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		]
+	}
 }

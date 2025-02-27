@@ -1,4 +1,3 @@
-import {cube} from '@remotion-dev/cube-presentation';
 import {clockWipe} from '@remotion/transitions/clock-wipe';
 import {fade} from '@remotion/transitions/fade';
 import {flip} from '@remotion/transitions/flip';

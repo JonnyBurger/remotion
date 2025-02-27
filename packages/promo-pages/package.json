@@ -21,7 +21,7 @@
 		"hls.js": "1.5.19",
 		"polished": "4.3.1",
 		"remotion": "workspace:*",
-		"vite": "^5.4.12",
+		"vite": "5.4.12",
 		"zod": "3.22.3"
 	},
 	"devDependencies": {
@@ -29,16 +29,17 @@
 		"@eslint/eslintrc": "3.1.0",
 		"@types/react": "19.0.0",
 		"@types/react-dom": "19.0.0",
+		"plyr": "3.7.3",
 		"eslint": "9.19.0",
 		"eslint-config-next": "15.1.6",
-		"plyr": "^3.7.3",
 		"postcss": "8.4.47",
 		"tailwindcss": "4.0.0",
 		"@tailwindcss/cli": "4.0.0",
 		"@tailwindcss/vite": "4.0.0",
+		"tailwindcss-scoped-preflight": "3.4.10",
+		"@vitejs/plugin-react-swc": "3.5.0",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
-		"@vitejs/plugin-react-swc": "^3.5.0",
 		"tailwind-merge": "2.5.2",
 		"bun-plugin-tailwind": "0.0.13",
 		"clsx": "2.1.1"
