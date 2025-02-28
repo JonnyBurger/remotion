@@ -56,6 +56,18 @@
 			"require": "./dist/node-writer.js",
 			"module": "./dist/esm/node-writer.mjs",
 			"import": "./dist/esm/node-writer.mjs"
+		},
+		"./worker-server": {
+			"types": "./dist/worker-server.d.ts",
+			"require": "./dist/worker-server.js",
+			"module": "./dist/esm/worker-server.mjs",
+			"import": "./dist/esm/worker-server.mjs"
+		},
+		"./worker": {
+			"types": "./dist/worker.d.ts",
+			"require": "./dist/worker.js",
+			"module": "./dist/esm/worker.mjs",
+			"import": "./dist/esm/worker.mjs"
 		}
 	},
 	"typesVersions": {
@@ -71,6 +83,12 @@
 			],
 			"node-writer": [
 				"dist/node-writer.d.ts"
+			],
+			"worker-server": [
+				"dist/worker-server.d.ts"
+			],
+			"worker": [
+				"dist/worker.d.ts"
 			]
 		}
 	},

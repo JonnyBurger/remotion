@@ -26,8 +26,6 @@ try {
     console.log('The file is a GIF');
   } else if (e instanceof IsAPdfError) {
     console.log('The file is a PDF');
-  } else if (e instanceof IsAnUnsupportedAudioTypeError) {
-    console.log('The file is an audio file of format:', e.audioType);
   } else if (e instanceof IsAnUnsupportedFileTypeError) {
     console.log('The file is of an unsupported type');
   }
@@ -45,19 +43,6 @@ An error if the image is a `png`, `jpeg`, `bmp` or `webp`.
 - `mimeType`: The MIME type of the file.
 - `imageType`: The type of the image (`png`, `jpeg`, `bmp` or `webp`).
 - `dimensions`: The dimensions of the image (`width` and `height`).
-
-### `IsAnUnsupportedAudioTypeError`
-
-An error if the file is an audio file that `@remotion/media-parser` does not yet support.
-
-- `fileName`: The name of the file - from file name or `Content-Disposition` header.
-- `sizeInBytes`: The size of the file in bytes.
-- `mimeType`: The MIME type of the file.
-- `audioType`: The type of the audio file.
-
-:::note
-Currently, as aac, mp3 and wav are supported and others are unknown, this error will never be thrown.
-:::
 
 ### `IsAGifError`
 

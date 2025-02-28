@@ -20,7 +20,6 @@ export {
 	hasBeenAborted,
 	IsAGifError,
 	IsAnImageError,
-	IsAnUnsupportedAudioTypeError,
 	IsAnUnsupportedFileTypeError,
 	IsAPdfError,
 	MediaParserAbortError,

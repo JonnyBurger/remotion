@@ -15,6 +15,7 @@ export class IsAGifError extends Error {
 		fileName: string | null;
 	}) {
 		super(message);
+		this.name = 'IsAGifError';
 		this.fileName = 'IsAGifError';
 		this.mimeType = mimeType;
 		this.sizeInBytes = sizeInBytes;
@@ -26,8 +27,8 @@ export class IsAGifError extends Error {
 	}
 }
 
-type ImageType = 'png' | 'jpeg' | 'bmp' | 'webp';
-type Dimensions = {width: number; height: number};
+export type ImageType = 'png' | 'jpeg' | 'bmp' | 'webp';
+export type Dimensions = {width: number; height: number};
 
 export class IsAnImageError extends Error {
 	public imageType: ImageType;
@@ -121,40 +122,6 @@ export class IsAnUnsupportedFileTypeError extends Error {
 	}
 }
 
-type UnsupportedAudioType = never;
-
-export class IsAnUnsupportedAudioTypeError extends Error {
-	public mimeType: string | null;
-	public sizeInBytes: number | null;
-	public fileName: string | null;
-	public audioType: UnsupportedAudioType | null;
-
-	constructor({
-		message,
-		mimeType,
-		sizeInBytes,
-		fileName,
-		audioType,
-	}: {
-		message: string;
-		mimeType: string | null;
-		sizeInBytes: number | null;
-		fileName: string | null;
-		audioType: UnsupportedAudioType | null;
-	}) {
-		super(message);
-		this.name = 'IsAnUnsupportedAudioTypeError';
-		this.mimeType = mimeType;
-		this.sizeInBytes = sizeInBytes;
-		this.fileName = fileName;
-		this.audioType = audioType;
-
-		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, IsAnUnsupportedAudioTypeError);
-		}
-	}
-}
-
 export class MediaParserAbortError extends Error {
 	constructor(message: string) {
 		super(message);
@@ -166,5 +133,9 @@ export class MediaParserAbortError extends Error {
 export const hasBeenAborted = (
 	error: unknown,
 ): error is MediaParserAbortError => {
-	return error instanceof MediaParserAbortError;
+	return (
+		error instanceof MediaParserAbortError ||
+		// On worker it is not the same instance, but same name
+		(error as Error).name === 'MediaParserAbortError'
+	);
 };
