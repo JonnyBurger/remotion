@@ -46,7 +46,7 @@ export const parseTrun = ({
 			flags & 0x800
 				? version === 0
 					? iterator.getUint32()
-					: iterator.getInt32Le()
+					: iterator.getInt32()
 				: null;
 
 		samples.push({

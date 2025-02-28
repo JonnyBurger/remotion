@@ -67,7 +67,7 @@ const getSamplesFromTraf = (
 			const samplePosition: SamplePosition = {
 				offset: offset + (moofOffset ?? 0) + (dataOffset ?? 0),
 				dts,
-				cts: dts,
+				cts: dts + (sample.sampleCompositionTimeOffset ?? 0),
 				duration,
 				isKeyframe: keyframe,
 				size,
@@ -104,5 +104,6 @@ export const getSamplesFromMoof = ({
 			? getSamplesFromTraf(traf, moofBox.offset)
 			: [];
 	});
+
 	return mapped.flat(1);
 };
