@@ -29,7 +29,7 @@ import {ChromeMode} from '../options/chrome-mode';
 import type {DownloadBrowserProgressFn} from '../options/on-browser-download';
 import {getDownloadsCacheDir} from './get-download-destination';
 
-const TESTED_VERSION = '123.0.6312.86';
+const TESTED_VERSION = '133.0.6943.0';
 // https://github.com/microsoft/playwright/tree/v1.42.0
 const PLAYWRIGHT_VERSION = '1105'; // 123.0.6312.4
 
