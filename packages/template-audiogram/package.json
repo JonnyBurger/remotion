@@ -17,6 +17,7 @@
     "@remotion/captions": "workspace:*",
     "@remotion/zod-types": "workspace:*",
     "@remotion/google-fonts": "workspace:*",
+    "@remotion/install-whisper-cpp": "workspace:*",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "remotion": "workspace:*",

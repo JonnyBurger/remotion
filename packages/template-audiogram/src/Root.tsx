@@ -15,29 +15,21 @@ export const RemotionRoot: React.FC = () => {
         height={1080}
         schema={audiogramSchema}
         defaultProps={{
-          // Audio settings
-          audioOffsetInSeconds: 6.9,
-
-          // Title settings
+          audioOffsetInSeconds: 0,
           audioFileName: staticFile("audio.wav"),
           coverImgFileName: staticFile("cover.jpg"),
-          titleText:
-            "#234 – Money, Kids, and Choosing Your Market with Justin Jackson of Transistor.fm",
+          titleText: "Deep Dive 170 – Remotion mit Jonny Burger",
           titleColor: "rgba(186, 186, 186, 0.93)",
-
-          // Subtitles settings
-          subtitlesFileName: staticFile("captions1.srt"),
+          subtitlesFileName: staticFile("captions2.json"),
           onlyDisplayCurrentSentence: true,
           subtitlesTextColor: "rgba(255, 255, 255, 0.93)",
           subtitlesLinePerPage: 4,
           subtitlesZoomMeasurerSize: 10,
           subtitlesLineHeight: 98,
-
-          // Wave settings
           waveColor: "#a3a5ae",
           waveFreqRangeStartIndex: 7,
           waveLinesToDisplay: 29,
-          waveNumberOfSamples: "256", // This is string for Remotion controls and will be converted to a number
+          waveNumberOfSamples: "256" as const,
           mirrorWave: true,
           captions: null,
         }}

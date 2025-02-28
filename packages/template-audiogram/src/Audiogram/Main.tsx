@@ -1,11 +1,19 @@
 import React from "react";
-import { AbsoluteFill, Audio, Img, Sequence, useVideoConfig } from "remotion";
+import {
+  AbsoluteFill,
+  Audio,
+  Img,
+  Sequence,
+  staticFile,
+  useVideoConfig,
+} from "remotion";
 import { loadFont, fontFamily } from "@remotion/google-fonts/IBMPlexSans";
 import "./style.css";
 
 import { PaginatedCaptions } from "./Captions";
 import { Waveform } from "./Waveform";
 import { AudiogramCompositionSchemaType } from "./schema";
+import { VoiceVis } from "./Waveform2";
 
 loadFont("normal", {
   weights: ["500"],
@@ -50,20 +58,24 @@ export const Audiogram: React.FC<AudiogramCompositionSchemaType> = ({
           }}
         >
           <div className="row">
-            <Img className="cover" src={coverImgFileName} />
+            <Img
+              className="cover"
+              src={
+                "https://i.scdn.co/image/ab67656300005f1f16d0cf26a8f69dcfa09c630b"
+              }
+            />
             <div className="title" style={{ color: titleColor }}>
               {titleText}
             </div>
           </div>
           <div>
-            <Waveform
-              key={audioFileName}
-              audioSrc={audioFileName}
-              mirrorWave={mirrorWave}
-              waveColor={waveColor}
-              numberOfSamples={Number(waveNumberOfSamples)}
-              freqRangeStartIndex={waveFreqRangeStartIndex}
-              waveLinesToDisplay={waveLinesToDisplay}
+            <VoiceVis
+              padding={50}
+              audioSrc={staticFile("audio.wav")}
+              numberOfSamples={40}
+              windowInSeconds={0.1}
+              posterization={3}
+              amplitude={4}
             />
           </div>
           <div

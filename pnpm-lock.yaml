@@ -2263,6 +2263,9 @@ importers:
       '@remotion/google-fonts':
         specifier: workspace:*
         version: link:../google-fonts
+      '@remotion/install-whisper-cpp':
+        specifier: workspace:*
+        version: link:../install-whisper-cpp
       '@remotion/media-utils':
         specifier: workspace:*
         version: link:../media-utils

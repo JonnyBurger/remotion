@@ -22,7 +22,7 @@ export const VoiceVisualization: React.FC = () => {
 				padding={padding}
 				audioDataVoice={audioDataVoice}
 				numberOfSamples={10}
-				windowInSeconds={1}
+				windowInSeconds={0.1}
 				posterization={3}
 				amplitude={4}
 			/>
@@ -30,7 +30,7 @@ export const VoiceVisualization: React.FC = () => {
 				padding={padding}
 				audioDataVoice={audioDataVoice}
 				numberOfSamples={40}
-				windowInSeconds={1}
+				windowInSeconds={0.1}
 				posterization={3}
 				amplitude={3}
 			/>
@@ -38,7 +38,7 @@ export const VoiceVisualization: React.FC = () => {
 				padding={padding}
 				audioDataVoice={audioDataVoice}
 				numberOfSamples={64}
-				windowInSeconds={1}
+				windowInSeconds={0.1}
 				posterization={3}
 				amplitude={3}
 			/>
@@ -46,7 +46,7 @@ export const VoiceVisualization: React.FC = () => {
 				padding={padding}
 				audioDataVoice={audioDataVoice}
 				numberOfSamples={200}
-				windowInSeconds={1}
+				windowInSeconds={0.1}
 				posterization={3}
 				amplitude={3}
 			/>
